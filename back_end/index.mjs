@@ -2,6 +2,13 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import AdminRouter from './routes/adminRoutes.mjs';
+import MessageRouter from './routes/messageRoutes.mjs';
+import ClientRouter from './routes/clientRoutes.mjs';
+import ProductRouter from './routes/productRoutes.mjs';
+import OrderRouter from './routes/orderRoutes.mjs';
+import ServiceRouter from './routes/serviceRoutes.mjs';
+import ServiceOrderRouter from './routes/serviceOrderRoutes.mjs';
 dotenv.config();
 
 const app = express();
@@ -34,7 +41,11 @@ const StartServer = () => {
     }
 }
 
-app.get('/', (req, res) => {
-    res.status(200).send('Hello from the backend!');
-});
-    StartServer();
+app.use('/api', AdminRouter);
+app.use('/api', MessageRouter);
+app.use('/api', ClientRouter);
+app.use('/api', ProductRouter);
+app.use('/api', OrderRouter);
+app.use('/api', ServiceRouter);
+app.use('/api', ServiceOrderRouter);
+StartServer();

@@ -1,0 +1,146 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "collections": "Collections",
+    "contact": "Contactez-nous",
+    "cart": "Panier"
+  },
+  "home": {
+    "welcome": "Bienvenue chez Zelije",
+    "featured": "Collections en vedette",
+    "newArrivals": "Nouveautés",
+    "exploreButton": "Explorer la collection"
+  },
+  "slider": {
+    "slide1": {
+      "title": "Chaque Carreau Raconte une Histoire",
+      "subtitle": "Découvrez l'art et l'héritage derrière chaque pièce artisanale",
+      "buttonText": "Explorer la Collection"
+    },
+    "slide2": {
+      "title": "Créé pour Votre Maison",
+      "subtitle": "Des carreaux de qualité premium qui transforment vos espaces de vie en œuvres d'art",
+      "buttonText": "Acheter Maintenant"
+    },
+    "slide3": {
+      "title": "Tradition de Fès, Beauté pour Vous",
+      "subtitle": "L'artisanat marocain authentique apportant une élégance intemporelle aux maisons modernes",
+      "buttonText": "En Savoir Plus"
+    },
+    "prevSlide": "Diapositive précédente",
+    "nextSlide": "Diapositive suivante",
+    "goToSlide": "Aller à la diapositive {{number}}"
+  },
+  "services": {
+    "sectionTitle": "Pourquoi Nous Choisir ?",
+    "sectionDescription": "Nous nous engageons à vous offrir la meilleure expérience d'achat avec nos services de qualité",
+    "service1": {
+      "title": "Paiement à la Livraison",
+      "description": "Partout au Maroc"
+    },
+    "service2": {
+      "title": "Livraison Rapide",
+      "description": "Nous priorisons la relation client"
+    },
+    "service3": {
+      "title": "Véritable Garantie",
+      "description": "Nos articles sont tous certifiés"
+    },
+    "service4": {
+      "title": "Service après vente",
+      "description": "Plus de soucis sur la sécurité"
+    },
+    "bottomText": "Découvrez notre collection de carreaux artisanaux",
+    "ctaButton": "Voir Nos Produits"
+  },
+  "section": {
+    "title": "Zellige marocain : l’art au service d’un savoir-faire intemporel",
+    "description1": "Taillé à la main, posé à la main, poli à la main — le zellige marocain est bien plus qu’un carrelage. C’est une tradition vivante née dans la ville impériale de Fès, où des maîtres artisans façonnent l’argile et les pigments depuis plus de mille ans. Chaque pièce porte de légères variations qui témoignent d’un véritable savoir-faire — aucun carreau n’est identique.",
+    "description2": "Réputé pour son éclat, ses motifs raffinés et sa durabilité exceptionnelle, le zellige transforme chaque surface en une œuvre d’art. Choisir le zellige, ce n’est pas seulement choisir un carrelage, c’est adopter un héritage de beauté, de culture et d’authenticité qui traverse les âges.",
+    "image1Alt": "contenu bureau 1",
+    "image2Alt": "contenu bureau 2"
+  },
+  "contact": {
+    "hero": {
+      "title": "Contactez-Nous",
+      "subtitle": "Nous sommes là pour répondre à toutes vos questions sur nos carreaux artisanaux"
+    },
+    "form": {
+      "title": "Envoyez-nous un message",
+      "fullName": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "subject": "Sujet",
+      "message": "Message",
+      "required": "*",
+      "placeholders": {
+        "name": "Votre nom",
+        "email": "votre@email.com",
+        "phone": "+212 XXX XX XX XX",
+        "subject": "Choisissez un sujet",
+        "message": "Décrivez votre demande en détail..."
+      },
+      "subjects": {
+        "quote": "Demande de devis",
+        "productInfo": "Information produit",
+        "customOrder": "Commande personnalisée",
+        "afterSale": "Service après-vente",
+        "other": "Autre"
+      },
+      "submitButton": {
+        "idle": "Envoyer le message",
+        "loading": "Envoi en cours..."
+      }
+    },
+    "contactInfo": {
+      "title": "Nos Coordonnées",
+      "phone": {
+        "title": "Téléphone",
+        "numbers": ["+212 5XX XX XX XX", "+212 6XX XX XX XX"]
+      },
+      "email": {
+        "title": "Email",
+        "addresses": ["contact@votreentreprise.ma", "info@votreentreprise.ma"]
+      },
+      "address": {
+        "title": "Adresse",
+        "lines": ["Fès, Maroc", "Quartier des Artisans"]
+      },
+      "hours": {
+        "title": "Horaires",
+        "times": ["Lun - Ven: 9h00 - 18h00", "Sam: 9h00 - 13h00"]
+      }
+    },
+    "social": {
+      "title": "Suivez-nous",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn"
+    },
+    "whatsapp": {
+      "title": "Contact Rapide",
+      "description": "Besoin d'une réponse immédiate ? Contactez-nous sur WhatsApp !",
+      "button": "WhatsApp"
+    }
+  },
+  "footer": {
+    "about": "À propos",
+    "contact": "Contact",
+    "shipping": "Expédition",
+    "returns": "Retours",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions générales",
+    "cookies": "Politique des cookies",
+    "newsletter": "Inscrivez-vous à notre newsletter",
+    "subscribe": "S'abonner",
+    "description": "Découvrez nos collections premium créées avec excellence et passion. Nous nous engageons à fournir des produits de qualité qui dépassent vos attentes.",
+    "quickLinks": "Liens rapides",
+    "customerService": "Service client",
+    "faq": "FAQ",
+    "support": "Support",
+    "stayUpdated": "Restez informé",
+    "enterEmail": "Entrez votre email",
+    "copyright": "© {{year}} Zelij Capital. Tous droits réservés."
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "navigation": {
+    "home": "Home",
+    "collections": "Collections",
+    "contact": "Contact us",
+    "cart": "Cart"
+  },
+  "home": {
+    "welcome": "Welcome to Zelije",
+    "featured": "Featured Collections",
+    "newArrivals": "New Arrivals",
+    "exploreButton": "Explore Collection"
+  },
+  "slider": {
+    "slide1": {
+      "title": "Every Tile Tells a Story",
+      "subtitle": "Discover the artistry and heritage behind each handcrafted piece",
+      "buttonText": "Explore Collection"
+    },
+    "slide2": {
+      "title": "Crafted for Your Home",
+      "subtitle": "Premium quality tiles that transform your living spaces into works of art",
+      "buttonText": "Shop Now"
+    },
+    "slide3": {
+      "title": "Tradition from Fes, Beauty for You",
+      "subtitle": "Authentic Moroccan craftsmanship bringing timeless elegance to modern homes",
+      "buttonText": "Learn More"
+    },
+    "prevSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "goToSlide": "Go to slide {{number}}"
+  },
+  "services": {
+    "sectionTitle": "Why Choose Us?",
+    "sectionDescription": "We are committed to providing you with the best shopping experience with our quality services",
+    "service1": {
+      "title": "Cash on Delivery",
+      "description": "All across Morocco"
+    },
+    "service2": {
+      "title": "Fast Delivery",
+      "description": "We prioritize customer relationships"
+    },
+    "service3": {
+      "title": "Genuine Warranty",
+      "description": "All our items are certified"
+    },
+    "service4": {
+      "title": "After-sales Service",
+      "description": "No more security concerns"
+    },
+    "bottomText": "Discover our collection of artisanal tiles",
+    "ctaButton": "View Our Products"
+  },
+  "section": {
+    "title": "Moroccan Zellige: Where Art Meets Timeless Craft",
+    "description1": "Hand-cut, hand-placed, and hand-polished — Moroccan zellige is more than tile. It’s a living tradition born in the imperial city of Fes, where master artisans have shaped clay and pigment for over a thousand years. Every piece carries slight variations that reflect true craftsmanship — no two tiles are ever the same.",
+    "description2": "Renowned for its luminous glaze, intricate patterns, and unmatched durability, zellige transforms any surface into a work of art. Choosing zellige isn’t just choosing tile — it’s choosing a legacy of beauty, culture, and authenticity that never goes out of style.",
+    "image1Alt": "office content 1",
+    "image2Alt": "office content 2"
+  },
+  "contact": {
+    "hero": {
+      "title": "Contact Us",
+      "subtitle": "We're here to answer all your questions about our artisanal tiles"
+    },
+    "form": {
+      "title": "Send us a message",
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "subject": "Subject",
+      "message": "Message",
+      "required": "*",
+      "placeholders": {
+        "name": "Your name",
+        "email": "your@email.com",
+        "phone": "+212 XXX XX XX XX",
+        "subject": "Choose a subject",
+        "message": "Describe your request in detail..."
+      },
+      "subjects": {
+        "quote": "Request a quote",
+        "productInfo": "Product information",
+        "customOrder": "Custom order",
+        "afterSale": "After-sales service",
+        "other": "Other"
+      },
+      "submitButton": {
+        "idle": "Send message",
+        "loading": "Sending..."
+      }
+    },
+    "contactInfo": {
+      "title": "Our Contact Details",
+      "phone": {
+        "title": "Phone",
+        "numbers": ["+212 5XX XX XX XX", "+212 6XX XX XX XX"]
+      },
+      "email": {
+        "title": "Email",
+        "addresses": ["contact@yourcompany.ma", "info@yourcompany.ma"]
+      },
+      "address": {
+        "title": "Address",
+        "lines": ["Fes, Morocco", "Artisans Quarter"]
+      },
+      "hours": {
+        "title": "Opening Hours",
+        "times": ["Mon - Fri: 9:00 AM - 6:00 PM", "Sat: 9:00 AM - 1:00 PM"]
+      }
+    },
+    "social": {
+      "title": "Follow Us",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn"
+    },
+    "whatsapp": {
+      "title": "Quick Contact",
+      "description": "Need an immediate response? Contact us on WhatsApp!",
+      "button": "WhatsApp"
+    }
+  },
+  "footer": {
+    "about": "About",
+    "contact": "Contact",
+    "shipping": "Shipping",
+    "returns": "Returns",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "cookies": "Cookie Policy",
+    "newsletter": "Subscribe to our newsletter",
+    "subscribe": "Subscribe",
+    "description": "Discover our premium collections crafted with excellence and passion. We're committed to delivering quality products that exceed your expectations.",
+    "quickLinks": "Quick Links",
+    "customerService": "Customer Service",
+    "faq": "FAQ",
+    "support": "Support",
+    "stayUpdated": "Stay Updated",
+    "enterEmail": "Enter your email",
+    "copyright": "© {{year}} Zelij Capital. All rights reserved."
+  }
+}

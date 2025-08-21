@@ -10,5 +10,10 @@ plugins: [react(), tailwindcss()],
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    
   },
+  server: {
+    host: true,        // allows access from network / Docker
+    port: 5173,        // optional: explicitly set the port
+  }
 })

@@ -1,0 +1,165 @@
+import asyncHandler from "express-async-handler";
+import Product from "../models/productModel.mjs";
+import ProductDetail from "../models/productDetailModel.mjs";
+import mongoose from "mongoose";
+
+// ---------------------------
+// Create a new product
+// ---------------------------
+export const createProductWithDetails = asyncHandler(async (req, res) => {
+  const { name, price, size, type, details } = req.body;
+
+  // 1. Validate that details exist
+  if (!details || !Array.isArray(details) || details.length === 0) {
+    return res.status(400).json({
+      message: "At least one product detail is required.",
+    });
+  }
+
+  // 2. Create product first
+  const product = await Product.create({ name, price, size, type });
+
+  const detailsToInsert = details.map((d) => ({
+    ...d,
+    productId: product._id,
+  }));
+
+  const insertedDetails = await ProductDetail.insertMany(detailsToInsert);
+
+  return res.status(201).json({
+    message: "Product with details created successfully",
+    product,
+    details: insertedDetails,
+  });
+});
+
+// ---------------------------
+// Get all products
+// ---------------------------
+export const getProducts = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.aggregate([
+      {
+        $sort: { createdAt: -1 }
+      },
+      {
+        $lookup: {
+          from: "productdetails",              
+          localField: "_id",                 
+          foreignField: "productId",         
+          as: "details"                      
+        }
+      }
+    ]);
+
+    return res.status(200).json({ total: products.length, products });
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching products", error });
+  }
+});
+
+// ---------------------------
+// Get a single product by ID
+// ---------------------------
+export const getProductById = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ message: "Invalid product ID format" });
+  }
+
+  try {
+    const product = await Product.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(productId) } },
+      {
+        $lookup: {
+          from: "productdetails",
+          localField: "_id",
+          foreignField: "productId",
+          as: "details"
+        }
+      }
+    ]);
+
+    if (!product || product.length === 0) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    return res.status(200).json({ product: product[0] });
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching product", error });
+  }
+});
+
+// ---------------------------
+// Update product
+// ---------------------------
+export const updateProduct = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const { name, price, size, type, details } = req.body;
+
+  // Validate ID format
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ message: "Invalid productId format" });
+  }
+
+  try {
+    // Find product
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Update main product fields
+    product.name = name || product.name;
+    product.price = price ?? product.price;
+    product.size = size || product.size;
+    product.type = type || product.type;
+    await product.save();
+
+    // If details are provided, replace them
+    if (Array.isArray(details)) {
+      // Remove existing details for this product
+      await ProductDetail.deleteMany({ productId });
+
+      // Add new details
+      const newDetails = details.map(d => ({
+        productId,
+        colorName: d.colorName,
+        colorCode: d.colorCode,
+        quantity: d.quantity,
+        picture: d.picture,
+      }));
+
+      await ProductDetail.insertMany(newDetails);
+    }
+
+    return res.status(200).json({
+      message: "Product and details updated successfully",
+      productId: product._id,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Error updating product", error });
+  }
+});
+
+// ---------------------------
+// Delete product
+// ---------------------------
+export const deleteProduct = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const product = await Product.findByIdAndDelete(productId);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    // Optionally delete all related product details
+    await ProductDetail.deleteMany({ productId });
+
+    return res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Error deleting product", error });
+  }
+});
+
+
