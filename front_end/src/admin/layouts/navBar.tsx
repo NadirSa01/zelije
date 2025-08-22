@@ -5,11 +5,12 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import logo from "@/assets/Logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-const ActiveNavLink = ({ to, children, className = "" }) => {
+
+const ActiveNavLink = ({ to, children, className = "" }: { to: string; children: ReactNode; className?: string }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
 
@@ -17,7 +18,7 @@ const ActiveNavLink = ({ to, children, className = "" }) => {
     <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
       <Link
         to={to}
-        className={`relative after:absolute after:left-0 after:bottom-0 after:h-0.5 after:rounded after:transition-all after:duration-300 after:origin-left hover:after:w-full ${
+        className={`relative bg-transparent after:absolute after:left-0 after:bottom-0 after:h-0.5 after:rounded after:transition-all after:duration-300 after:origin-left hover:after:w-full ${
           isActive ? "after:w-full after:bg-black" : "after:w-0 after:bg-black"
         } ${className}`}
       >

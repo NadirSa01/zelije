@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { LanguageContext } from './context';
-import { languages } from '@/constants/languages';
 import i18n from '@/i18n/i18n';
+import type { LANGUAGES } from '@/constants/languages';
 
 interface LanguageProviderProps {
   children: ReactNode;
@@ -9,7 +9,7 @@ interface LanguageProviderProps {
 
 export default function LanguageProvider({ children }: LanguageProviderProps) {
   const [currentLanguage, setCurrentLanguage] = useState(() => {
-    return (localStorage.getItem('language') || 'fr') as typeof languages[number]['code'];
+    return (localStorage.getItem('language') || 'fr') as typeof LANGUAGES[number]['code'];
   });
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function LanguageProvider({ children }: LanguageProviderProps) {
     document.documentElement.lang = currentLanguage;
   }, [currentLanguage]);
 
-  const changeLanguage = (lang: typeof languages[number]['code']) => {
+  const changeLanguage = (lang: typeof LANGUAGES[number]['code']) => {
     setCurrentLanguage(lang);
   };
 

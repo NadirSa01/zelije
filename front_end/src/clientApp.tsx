@@ -5,6 +5,7 @@ import Home from "./pages/home/home";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { useEffect, useRef } from "react";
 import ContactPage from "./pages/contact/comps/concatc";
+import { CardDemo } from "./pages/TestShadcn";
 function ClientApp() {
   const Xref = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -26,7 +27,7 @@ function ClientApp() {
           <Route path="/" element={<Home />} />
           <Route path="/collections" element={<div>Collections</div>} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/cart" element={<div>Cart</div>} />
+          <Route path="/cart" element={<CardDemo/>} />
         </Routes>
         <Footer />
       </LanguageProvider>
