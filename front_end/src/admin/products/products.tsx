@@ -1,4 +1,4 @@
-import ProductsTable from "./components/productsTable";
+import ProductsTable from "./components/table/productsTable";
 
 function Products (){
     return(

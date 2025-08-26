@@ -1,113 +1,136 @@
 import asyncHandler from "express-async-handler";
 import Message from "../models/messageModel.mjs";
 import Client from "../models/clientModel.mjs";
+import mongoose from "mongoose";
 
 export const addMessage = asyncHandler(async (req, res) => {
-  const { fullName, telephone, address, city, subject, message } =
+  const { clientId, subject, message } =
     req.body;
   try {
-    if (
-      !fullName ||
-      !telephone ||
-      !address ||
-      !city ||
-      !subject ||
-      !message
-    ) {
+    if (!subject || !message) {
       return res.status(400).json({ message: "All fields are required" });
     }
-    // we check client if exists before add it
-    const checkcClientIfExists = await Client.findOne({ telephone });
-    if (checkcClientIfExists) {
       const newMessage = await Message.create({
-        clientId: checkcClientIfExists._id,
+        clientId: clientId,
         subject,
         message,
       });
-      return res
-        .status(200)
-        .json({ message: "Message sent successfully", newMessage });
-    } else {
-      const newClient = await Client.create({
-        fullName,
-        telephone,
-        address,
-        city,
-      });
-      const newMessage = await Message.create({
-        clientId: newClient._id,
-        subject,
-        message,
-      });
-      return res
+    return res
         .status(201)
         .json({ message: "Message sent successfully", newMessage });
-    }
-  } catch (error) {
+  }catch (error) {
     return res.status(500).json({ message: "Error sending message", error });
   }
 });
 
 export const getMessages = asyncHandler(async (req, res) => {
   try {
-    const { search, from, to, status } = req.query;
-
-      const page = Math.max(1, parseInt(req.query.page ?? "1", 10));
-      const rawLimit = parseInt(req.query.limit ?? "10", 10);
-      const limit = Math.min(Math.max(1, isNaN(rawLimit) ? 10 : rawLimit), 100);
-
-    const query = {};
-
-    if (search && search.trim()) {
-      query.subject = { $regex: search.trim() };
-    }
-
-    if (from || to) {
-      query.createdAt = {};
-      if (from) query.createdAt.$gte = new Date(from);
-      if (to) query.createdAt.$lte = new Date(to);
-    }
-
-    if (status === "true") query.status = true;
-    if (status === "false") query.status = false;
-
-    const [messages, total] = await Promise.all([
-      Message.find(query)
-        .sort({ createdAt: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean(),
-      Message.countDocuments(query),
+const messages = await Message.aggregate([
+      {
+        $lookup: {
+          from: "clients",                 // collection name in MongoDB (lowercase + plural of model)
+          localField: "clientId",          // field in Message
+          foreignField: "_id",             // field in Client
+          as: "client",                    // output array field
+        },
+      },
+      {
+        $unwind: "$client",                // convert client array to single object
+      },
+      {
+        $sort: { createdAt: -1 },          // newest first
+      },
+      {
+        $project: {                        // optional: shape response
+          _id: 1,
+          subject: 1,
+          message: 1,
+          status: 1,
+          createdAt: 1,
+          "client._id": 1,
+          "client.fullName": 1,
+          "client.telephone": 1,
+          "client.address": 1,
+          "client.city": 1,
+        },
+      },
     ]);
-
-    const pages = Math.max(1, Math.ceil(total / limit));
-
-    return res.status(200).json({
-      total,
-      page,
-      pages,
-      limit,
-      messages,
-    });
+    
+       return res.status(200).json({messages})
   } catch (error) {
-    return res.status(500).json({ message: "Error fetching messages", error });
+    return res.status(500).json({ message:  error.message });
   }
 });
-
 
 export const getMessagesById = asyncHandler(async (req, res) => {
   const { messageId } = req.params;
+
   try {
-    const message = await Message.find({ _id: messageId });
-    if (message.status === false) {
-      message.status = true;
-      await message.save();
+    if (!mongoose.Types.ObjectId.isValid(messageId)) {
+      return res.status(400).json({ message: "Invalid message ID" });
     }
+
+    const _id = new mongoose.Types.ObjectId(messageId);
+
+    // Update status first (only if it was false)
+    await Message.updateOne({ _id, status: false }, { $set: { status: true } });
+
+    // Then fetch with client info
+    const [message] = await Message.aggregate([
+      { $match: { _id } },
+      {
+        $lookup: {
+          from: "clients",          // collection name for Client model
+          localField: "clientId",   // <-- correct field in Message schema
+          foreignField: "_id",
+          as: "client",
+        },
+      },
+      // If you want to keep messages even if client is missing, set preserveNullAndEmptyArrays: true
+      { $unwind: { path: "$client", preserveNullAndEmptyArrays: false } },
+      {
+        $project: {
+          _id: 1,
+          subject: 1,
+          message: 1,
+          status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          client: {
+            _id: "$client._id",
+            fullName: "$client.fullName",
+            telephone: "$client.telephone",
+            address: "$client.address",
+            city: "$client.city",
+          },
+        },
+      },
+    ]);
+
+    if (!message) {
+      return res.status(404).json({ message: "Message not found" });
+    }
+
     return res.status(200).json({ message });
   } catch (error) {
-    return res.status(500).json({ Message: "Error fetching messages", error });
+    console.error("getMessagesById error:", error);
+    return res.status(500).json({ message: "Error fetching message", error });
   }
 });
+
+// export const getMessagesById = asyncHandler(async (req, res) => {
+//   const { messageId } = req.params;
+//   try {
+//     const message = await Message.find({ _id: messageId });
+//     if (message.status === false) {
+//       message.status = true;
+//       await message.save();
+//     }
+//     return res.status(200).json({ message });
+//   } catch (error) {
+//     return res.status(500).json({ Message: "Error fetching messages", error });
+//   }
+// });
 
 export const getMessagesByClientId = asyncHandler(async (req, res) => {
   // const { clientId, status } = req.body;
@@ -137,7 +160,6 @@ export const getMessagesByClientId = asyncHandler(async (req, res) => {
 
 export const deleteMessage=asyncHandler(async(req,res)=>{
 const {id}=req.params;
-console.log(id);
 
 try {
   const deleteMessage = await Message.findByIdAndDelete(id);

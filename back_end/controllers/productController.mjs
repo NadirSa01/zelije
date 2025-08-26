@@ -40,16 +40,16 @@ export const getProducts = asyncHandler(async (req, res) => {
   try {
     const products = await Product.aggregate([
       {
-        $sort: { createdAt: -1 }
+        $sort: { createdAt: -1 },
       },
       {
         $lookup: {
-          from: "productdetails",              
-          localField: "_id",                 
-          foreignField: "productId",         
-          as: "details"                      
-        }
-      }
+          from: "productdetails",
+          localField: "_id",
+          foreignField: "productId",
+          as: "details",
+        },
+      },
     ]);
 
     return res.status(200).json({ total: products.length, products });
@@ -76,27 +76,25 @@ export const getProductById = asyncHandler(async (req, res) => {
           from: "productdetails",
           localField: "_id",
           foreignField: "productId",
-          as: "details"
-        }
-      }
+          as: "details",
+        },
+      },
     ]);
 
     if (!product || product.length === 0) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    return res.status(200).json({ product: product[0] });
+    // Wrap the product in an array to match frontend cache format
+    return res.status(200).json({ product });
   } catch (error) {
     return res.status(500).json({ message: "Error fetching product", error });
   }
 });
 
-// ---------------------------
-// Update product
-// ---------------------------
 export const updateProduct = asyncHandler(async (req, res) => {
   const { productId } = req.params;
-  const { name, price, size, type, details } = req.body;
+  const { payload } = req.body;
 
   // Validate ID format
   if (!mongoose.Types.ObjectId.isValid(productId)) {
@@ -104,41 +102,64 @@ export const updateProduct = asyncHandler(async (req, res) => {
   }
 
   try {
-    // Find product
-    const product = await Product.findById(productId);
-    if (!product) {
+    const ProductBody = {
+      name: {
+        en: payload.name.en,
+        ar: payload.name.ar,
+        fr: payload.name.fr,
+      },
+      price: payload.price,
+      size: payload.size,
+    };
+    const updatedProduct = await Product.findByIdAndUpdate(
+      { _id: productId },
+      { $set: ProductBody }
+    );
+
+    for (const detail of payload.details) {
+      if (mongoose.Types.ObjectId.isValid(detail.id)) {
+        await ProductDetail.findByIdAndUpdate(
+          { _id: detail.id },
+          {
+            $set: {
+              productId: productId,
+              colorName: {
+                en: detail.colorName.en,
+                fr: detail.colorName.fr,
+                ar: detail.colorName.ar
+              },
+              colorCode: detail.colorCode,
+              quantity: detail.quantity,
+              picture: detail.picture
+            }
+          },
+          { upsert: true }
+        );
+      }else{
+        await ProductDetail.create({
+          productId: productId,
+          colorName: {
+            en: detail.colorName.en,
+            fr: detail.colorName.fr,
+            ar: detail.colorName.ar
+          },
+          colorCode: detail.colorCode,
+          quantity: detail.quantity,
+          picture: detail.picture
+        });
+      }
+    }
+
+    if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    // Update main product fields
-    product.name = name || product.name;
-    product.price = price ?? product.price;
-    product.size = size || product.size;
-    product.type = type || product.type;
-    await product.save();
-
-    // If details are provided, replace them
-    if (Array.isArray(details)) {
-      // Remove existing details for this product
-      await ProductDetail.deleteMany({ productId });
-
-      // Add new details
-      const newDetails = details.map(d => ({
-        productId,
-        colorName: d.colorName,
-        colorCode: d.colorCode,
-        quantity: d.quantity,
-        picture: d.picture,
-      }));
-
-      await ProductDetail.insertMany(newDetails);
-    }
-
     return res.status(200).json({
-      message: "Product and details updated successfully",
-      productId: product._id,
+      message: "Product updated successfully",
     });
   } catch (error) {
+    console.log(error);
+    
     return res.status(500).json({ message: "Error updating product", error });
   }
 });
@@ -161,5 +182,3 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     return res.status(500).json({ message: "Error deleting product", error });
   }
 });
-
-

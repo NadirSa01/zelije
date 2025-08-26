@@ -6,7 +6,7 @@ const OrderLineSchema = new mongoose.Schema(
     productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
     productDetailId: { type: mongoose.Schema.Types.ObjectId, ref: "ProductDetail", required: true },
     quantity: { type: Number, required: true },
-    price: { type: Number, required: true }
+    price: { type: mongoose.Schema.Types.Decimal128 , required: true }
   },
   { timestamps: true }
 );

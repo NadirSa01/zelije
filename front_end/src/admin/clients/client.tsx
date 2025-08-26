@@ -1,4 +1,4 @@
-import ClientTable from "./components/clientTable";
+import ClientTable from "./components/table/clientTable";
 
 function Clients() {
     return (

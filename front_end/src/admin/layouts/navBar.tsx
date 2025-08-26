@@ -8,7 +8,6 @@ import {
 import { useState, type ReactNode } from "react";
 import logo from "@/assets/Logo.png";
 import { Link, useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 
 const ActiveNavLink = ({ to, children, className = "" }: { to: string; children: ReactNode; className?: string }) => {
   const location = useLocation();
@@ -30,7 +29,6 @@ const ActiveNavLink = ({ to, children, className = "" }: { to: string; children:
 
 function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { t } = useTranslation();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -65,6 +63,9 @@ function NavBar() {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <ActiveNavLink to="/admin/services">Services</ActiveNavLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <ActiveNavLink to="/admin/messages">Message</ActiveNavLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <ActiveNavLink to="/admin/profile">

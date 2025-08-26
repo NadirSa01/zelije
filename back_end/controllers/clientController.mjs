@@ -3,7 +3,7 @@ import Client from "../models/clientModel.mjs";
 export const createClient = asyncHandler(async (req, res) => {
   const { fullName, telephone, address, city } = req.body;
   try {
-    if (!fullName  || !telephone || !address || !city) {
+    if (!fullName || !telephone || !address || !city) {
       return res.status(400).json({ message: "All fields are required" });
     }
     const newClient = await Client.create({
@@ -12,7 +12,9 @@ export const createClient = asyncHandler(async (req, res) => {
       address,
       city,
     });
-    return res.status(201).json({ message: "Client created successfully", newClient });
+    return res
+      .status(201)
+      .json({ message: "Client created successfully", newClient });
   } catch (error) {
     return res.status(500).json({ message: "Error creating client", error });
   }
@@ -20,35 +22,15 @@ export const createClient = asyncHandler(async (req, res) => {
 
 export const getClients = asyncHandler(async (req, res) => {
   try {
-    // Read pagination params from query, with defaults
-    const page = Math.max(1, parseInt(req.query.page ?? "1", 10));
-    const rawLimit = parseInt(req.query.limit ?? "10", 10);
-    const limit = Math.min(Math.max(1, isNaN(rawLimit) ? 10 : rawLimit), 100);
-
-    // Count total clients
-    const total = await Client.countDocuments();
-
-    // Fetch clients with pagination
-    const clients = await Client.find()
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean();
-
-    const pages = Math.ceil(total / limit);
-
+    const clients = await Client.find().sort({ createdAt: -1 });
     return res.status(200).json({
-      total,
-      page,
-      pages,
-      limit,
-      clients,
+      message: "Clients fetched successfully",
+      clients: clients,
     });
   } catch (error) {
     return res.status(500).json({ message: "Error fetching clients", error });
   }
 });
-
 
 export const searchClients = asyncHandler(async (req, res) => {
   const { query: searchText } = req.body; // single input from frontend
@@ -64,12 +46,10 @@ export const searchClients = asyncHandler(async (req, res) => {
 
     // Search across multiple fields
     const clients = await Client.find({
-      $or: [
-        { fullName: regex },
-        { telephone: regex },
-        { city: regex },
-      ],
-    }).sort({ fullName: 1 }).lean();
+      $or: [{ fullName: regex }, { telephone: regex }, { city: regex }],
+    })
+      .sort({ fullName: 1 })
+      .lean();
 
     return res.status(200).json({
       total: clients.length,
@@ -80,22 +60,20 @@ export const searchClients = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 export const updateClient = asyncHandler(async (req, res) => {
   const { clientId } = req.params;
-  const { fullName, telephone, address, city } = req.body;
+  const { data } = req.body;
   try {
-    const client = await Client.findById(clientId);
+    const client = await Client.findByIdAndUpdate(
+      {_id:clientId},
+      data
+    );
     if (!client) {
       return res.status(404).json({ message: "Client not found" });
     }
-    client.fullName = fullName || client.fullName;
-    client.telephone = telephone || client.telephone;
-    client.address = address || client.address;
-    client.city = city || client.city;
-    await client.save();
-    return res.status(200).json({ message: "Client updated successfully", client });
+    return res
+      .status(200)
+      .json({ message: "Client updated successfully", client });
   } catch (error) {
     return res.status(500).json({ message: "Error updating client", error });
   }

@@ -1,10 +1,10 @@
-import ServicesTable from "./components/servicesTable";
+import ServiceTable from "./components/table/serviceTable";
+
 function Services() {
     return (
         <div>
             <div>
-                <ServicesTable />
-
+                <ServiceTable />
             </div>
         </div>
     );
