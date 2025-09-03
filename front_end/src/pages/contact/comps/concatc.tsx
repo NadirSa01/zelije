@@ -1,6 +1,28 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useTranslation } from 'react-i18next';
+import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import {
   Mail,
   Phone,
@@ -12,15 +34,21 @@ import {
   Twitter,
   Linkedin,
   MessageCircle,
+  User,
+  MapPinHouse,
 } from "lucide-react";
+import { useCreateMessageMutation } from "@/services/messages/messageApi";
 
-interface ContactForm {
-  name: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-}
+const contactSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  address: z.string().min(2, "Address must be at least 2 characters"),
+  city: z.string().min(2, "City must be at least 2 characters"),
+  phone: z.string().min(10, "Please enter a valid phone number"),
+  subject: z.string().min(1, "Please select a subject"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type ContactSchema = z.infer<typeof contactSchema>;
 
 interface ContactInfo {
   icon: React.ReactNode;
@@ -29,33 +57,36 @@ interface ContactInfo {
 
 const ContactPage: React.FC = () => {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState<ContactForm>({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
+  const [createMessage] = useCreateMessageMutation();
+  const form = useForm<ContactSchema>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: "",
+      address: "",
+      city: "",
+      phone: "",
+      subject: "",
+      message: "",
+    },
   });
-
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Contact information
   const contactInfo: ContactInfo[] = [
     {
       icon: <Phone className="w-6 h-6" />,
-      translationKey: "phone"
+      translationKey: "phone",
     },
     {
       icon: <Mail className="w-6 h-6" />,
-      translationKey: "email"
+      translationKey: "email",
     },
     {
       icon: <MapPin className="w-6 h-6" />,
-      translationKey: "address"
+      translationKey: "address",
     },
     {
       icon: <Clock className="w-6 h-6" />,
-      translationKey: "hours"
+      translationKey: "hours",
     },
   ];
 
@@ -87,55 +118,36 @@ const ContactPage: React.FC = () => {
     },
   ];
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const onSubmit = async (data: ContactSchema) => {
+    console.log("hellllo");
+    
+    console.log(data);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    // Create mailto link for email client
-    const mailtoLink = `mailto:contact@votreentreprise.ma?subject=${encodeURIComponent(
-      formData.subject
-    )}&body=${encodeURIComponent(
-      `Nom: ${formData.name}\nEmail: ${formData.email}\nTéléphone: ${formData.phone}\n\nMessage:\n${formData.message}`
-    )}`;
-
-    // Open email client
-    window.location.href = mailtoLink;
-
-    // Reset form after a short delay
-    setTimeout(() => {
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
-      });
-      setIsSubmitting(false);
-    }, 1000);
+    if (data) {
+      createMessage(data)
+        .unwrap()
+        .then(() => {
+          toast.success("Message send with success");
+          form.reset();
+        })
+        .catch((err) => {
+          toast.error(err);
+        });
+    }
   };
 
   return (
     <div className="min-h-screen">
+      <Toaster richColors position="top-right" />
+
       {/* Hero Section */}
       <div className="bg-black text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            {t('contact.hero.title')}
+            {t("contact.hero.title")}
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-            {t('contact.hero.subtitle')}
+            {t("contact.hero.subtitle")}
           </p>
         </div>
       </div>
@@ -148,144 +160,213 @@ const ContactPage: React.FC = () => {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-lg p-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                  {t('contact.form.title')}
+                  {t("contact.form.title")}
                 </h2>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Name and Email Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label
-                        htmlFor="name"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        {t('contact.form.fullName')} {t('contact.form.required')}
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                        placeholder={t('contact.form.placeholders.name')}
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        {t('contact.form.email')} {t('contact.form.required')}
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                        placeholder={t('contact.form.placeholders.email')}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Phone and Subject Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label
-                        htmlFor="phone"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        {t('contact.form.phone')}
-                      </label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                        placeholder={t('contact.form.placeholders.phone')}
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="subject"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        {t('contact.form.subject')} {t('contact.form.required')}
-                      </label>
-                      <select
-                        id="subject"
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                      >
-                        <option value="">{t('contact.form.placeholders.subject')}</option>
-                        <option value="quote">{t('contact.form.subjects.quote')}</option>
-                        <option value="productInfo">{t('contact.form.subjects.productInfo')}</option>
-                        <option value="customOrder">{t('contact.form.subjects.customOrder')}</option>
-                        <option value="afterSale">{t('contact.form.subjects.afterSale')}</option>
-                        <option value="other">{t('contact.form.subjects.other')}</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Message */}
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      {t('contact.form.message')} {t('contact.form.required')}
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      required
-                      rows={6}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                      placeholder={t('contact.form.placeholders.message')}
-                    />
-                  </div>
-
-                  {/* Submit Button */}
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-md font-semibold transition-colors duration-200 flex items-center justify-center gap-2"
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
                   >
-                    {isSubmitting ? (
+                    {/* Name and Email Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {t("contact.form.fullName")}{" "}
+                              <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Input
+                                  placeholder={t(
+                                    "contact.form.placeholders.name"
+                                  )}
+                                  className="pl-11 py-3"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      
+                      <FormField
+                        control={form.control}
+                        name="address"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {t("contact.form.address")}{" "}
+                              <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+                                <Input
+                                  type="text"
+                                  placeholder={t(
+                                    "contact.form.placeholders.address"
+                                  )}
+                                  className="pl-11 py-3"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Phone and Subject Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="city"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {t("contact.form.city")}{" "}
+                              <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <MapPinHouse className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+                                <Input
+                                  type="text"
+                                  placeholder={t(
+                                    "contact.form.placeholders.city"
+                                  )}
+                                  className="pl-11 py-3"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("contact.form.phone")}</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Input
+                                  type="tel"
+                                  placeholder={t(
+                                    "contact.form.placeholders.phone"
+                                  )}
+                                  className="pl-11 py-3"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="subject"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {t("contact.form.subject")}{" "}
+                              <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="py-3 w-full">
+                                  <SelectValue
+                                    placeholder={t(
+                                      "contact.form.placeholders.subject"
+                                    )}
+                                  />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="productInfo">
+                                  {t("contact.form.subjects.productInfo")}
+                                </SelectItem>
+                                <SelectItem value="customOrder">
+                                  {t("contact.form.subjects.customOrder")}
+                                </SelectItem>
+                                <SelectItem value="afterSale">
+                                  {t("contact.form.subjects.afterSale")}
+                                </SelectItem>
+                                <SelectItem value="other">
+                                  {t("contact.form.subjects.other")}
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Message */}
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {t("contact.form.message")}{" "}
+                            <span className="text-red-500">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder={t(
+                                "contact.form.placeholders.message"
+                              )}
+                              className="resize-none min-h-[150px]"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold transition-colors duration-200"
+                    >
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        {t('contact.form.submitButton.loading')}
+                        <Send className="w-4 h-4 mr-2" />
+                        {t("contact.form.submitButton.idle")}
                       </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4" />
-                        {t('contact.form.submitButton.idle')}
-                      </>
-                    )}
-                  </Button>
-                </form>
+                    </Button>
+                  </form>
+                </Form>
               </div>
             </div>
 
             {/* Contact Information Sidebar */}
             <div className="space-y-8">
-                {/* Contact Info Cards */}
+              {/* Contact Info Cards */}
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                  {t('contact.contactInfo.title')}
+                  {t("contact.contactInfo.title")}
                 </h3>
                 <div className="space-y-6">
                   {contactInfo.map((info, index) => (
@@ -295,23 +376,34 @@ const ContactPage: React.FC = () => {
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 mb-1">
-                          {t(`contact.contactInfo.${info.translationKey}.title`)}
+                          {t(
+                            `contact.contactInfo.${info.translationKey}.title`
+                          )}
                         </h4>
                         <div className="text-gray-600 text-sm space-y-1">
                           {(() => {
                             let items: string[] = [];
                             switch (info.translationKey) {
-                              case 'phone':
-                                items = t('contact.contactInfo.phone.numbers', { returnObjects: true }) as string[];
+                              case "phone":
+                                items = t("contact.contactInfo.phone.numbers", {
+                                  returnObjects: true,
+                                }) as string[];
                                 break;
-                              case 'email':
-                                items = t('contact.contactInfo.email.addresses', { returnObjects: true }) as string[];
+                              case "email":
+                                items = t(
+                                  "contact.contactInfo.email.addresses",
+                                  { returnObjects: true }
+                                ) as string[];
                                 break;
-                              case 'address':
-                                items = t('contact.contactInfo.address.lines', { returnObjects: true }) as string[];
+                              case "address":
+                                items = t("contact.contactInfo.address.lines", {
+                                  returnObjects: true,
+                                }) as string[];
                                 break;
-                              case 'hours':
-                                items = t('contact.contactInfo.hours.times', { returnObjects: true }) as string[];
+                              case "hours":
+                                items = t("contact.contactInfo.hours.times", {
+                                  returnObjects: true,
+                                }) as string[];
                                 break;
                             }
                             return items.map((item: string) => (
@@ -323,10 +415,12 @@ const ContactPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              </div>              {/* Social Media */}
+              </div>
+
+              {/* Social Media */}
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                  {t('contact.social.title')}
+                  {t("contact.social.title")}
                 </h3>
                 <div className="flex flex-wrap gap-4">
                   {socialLinks.map((social, index) => (
@@ -338,7 +432,9 @@ const ContactPage: React.FC = () => {
                       rel="noopener noreferrer"
                     >
                       {social.icon}
-                      <span className="text-sm font-medium">{t(`contact.social.${social.name.toLowerCase()}`)}</span>
+                      <span className="text-sm font-medium">
+                        {t(`contact.social.${social.name.toLowerCase()}`)}
+                      </span>
                     </a>
                   ))}
                 </div>
@@ -349,15 +445,15 @@ const ContactPage: React.FC = () => {
                 <div className="flex items-center gap-3 mb-4">
                   <MessageCircle className="w-6 h-6 text-green-600" />
                   <h3 className="text-xl font-bold text-green-800">
-                    {t('contact.whatsapp.title')}
+                    {t("contact.whatsapp.title")}
                   </h3>
                 </div>
                 <p className="text-green-700 mb-4">
-                  {t('contact.whatsapp.description')}
+                  {t("contact.whatsapp.description")}
                 </p>
                 <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
                   <MessageCircle className="w-4 h-4 mr-2" />
-                  {t('contact.whatsapp.button')}
+                  {t("contact.whatsapp.button")}
                 </Button>
               </div>
             </div>

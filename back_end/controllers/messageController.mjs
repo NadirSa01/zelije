@@ -4,44 +4,54 @@ import Client from "../models/clientModel.mjs";
 import mongoose from "mongoose";
 
 export const addMessage = asyncHandler(async (req, res) => {
-  const { clientId, subject, message } =
-    req.body;
+  const { name, address, phone, city, subject, message } = req.body;
+  
   try {
-    if (!subject || !message) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    // if (!name || !address || !city || !hone || !subject || !message) {
+    //   return res.status(400).json({ message: "All Field required" });
+    // }
+    const client = await Client.create({
+      fullName:name,
+      address:address,
+      telephone:phone,
+      city:city,
+    });
+    if (client) {
       const newMessage = await Message.create({
-        clientId: clientId,
+        clientId: client._id,
         subject,
         message,
+        status:false
       });
-    return res
+      return res
         .status(201)
         .json({ message: "Message sent successfully", newMessage });
-  }catch (error) {
+    }
+  } catch (error) {
     return res.status(500).json({ message: "Error sending message", error });
   }
 });
 
 export const getMessages = asyncHandler(async (req, res) => {
   try {
-const messages = await Message.aggregate([
+    const messages = await Message.aggregate([
       {
         $lookup: {
-          from: "clients",                 // collection name in MongoDB (lowercase + plural of model)
-          localField: "clientId",          // field in Message
-          foreignField: "_id",             // field in Client
-          as: "client",                    // output array field
+          from: "clients", // collection name in MongoDB (lowercase + plural of model)
+          localField: "clientId", // field in Message
+          foreignField: "_id", // field in Client
+          as: "client", // output array field
         },
       },
       {
-        $unwind: "$client",                // convert client array to single object
+        $unwind: "$client", // convert client array to single object
       },
       {
-        $sort: { createdAt: -1 },          // newest first
+        $sort: { createdAt: -1 }, // newest first
       },
       {
-        $project: {                        // optional: shape response
+        $project: {
+          // optional: shape response
           _id: 1,
           subject: 1,
           message: 1,
@@ -55,10 +65,10 @@ const messages = await Message.aggregate([
         },
       },
     ]);
-    
-       return res.status(200).json({messages})
+
+    return res.status(200).json({ messages });
   } catch (error) {
-    return res.status(500).json({ message:  error.message });
+    return res.status(500).json({ message: error.message });
   }
 });
 
@@ -80,8 +90,8 @@ export const getMessagesById = asyncHandler(async (req, res) => {
       { $match: { _id } },
       {
         $lookup: {
-          from: "clients",          // collection name for Client model
-          localField: "clientId",   // <-- correct field in Message schema
+          from: "clients", // collection name for Client model
+          localField: "clientId", // <-- correct field in Message schema
           foreignField: "_id",
           as: "client",
         },
@@ -158,16 +168,16 @@ export const getMessagesByClientId = asyncHandler(async (req, res) => {
   }
 });
 
-export const deleteMessage=asyncHandler(async(req,res)=>{
-const {id}=req.params;
+export const deleteMessage = asyncHandler(async (req, res) => {
+  const { id } = req.params;
 
-try {
-  const deleteMessage = await Message.findByIdAndDelete(id);
-  if (!deleteMessage) {
-    return res.status(404).json({ message: "Message not found" });
-  }
-  return res.status(200).json({ message: "Message deleted successfully" });
-} catch (error) {
+  try {
+    const deleteMessage = await Message.findByIdAndDelete(id);
+    if (!deleteMessage) {
+      return res.status(404).json({ message: "Message not found" });
+    }
+    return res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
     res.status(500).json({ message: "Error deleting message", error });
-}
-})
+  }
+});

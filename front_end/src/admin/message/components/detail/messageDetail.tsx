@@ -1,5 +1,5 @@
 // src/components/MessageDetail.tsx
-import React from 'react';
+import React from "react";
 import { useMessageFromCache } from "@/hooks/useMessageFromCash";
 import { useGetMessageByIdQuery } from "@/services/messages/messageApi";
 import { useParams, useNavigate } from "react-router-dom";
@@ -14,31 +14,30 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Clock, 
-  Mail, 
-  MapPin, 
-  Phone, 
-  User, 
-  MessageSquare, 
-  CheckCircle, 
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  MapPin,
+  Phone,
+  User,
+  MessageSquare,
+  CheckCircle,
   XCircle,
-  Loader2
-} from 'lucide-react';
+  Loader2,
+} from "lucide-react";
 
 // Type guard to check if value is an IMessage object
 const isIMessage = (value: any): value is IMessage => {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
-    typeof value._id === 'string' &&
-    typeof value.subject === 'string' &&
-    typeof value.message === 'string' &&
-    typeof value.status === 'boolean' &&
-    typeof value.createdAt === 'string' &&
-    typeof value.client === 'object' &&
+    typeof value._id === "string" &&
+    typeof value.subject === "string" &&
+    typeof value.message === "string" &&
+    typeof value.status === "boolean" &&
+    typeof value.createdAt === "string" &&
+    typeof value.client === "object" &&
     value.client !== null
   );
 };
@@ -48,17 +47,17 @@ const MessageDetail: React.FC = () => {
   const navigate = useNavigate();
   const messageFromCache = useMessageFromCache(id || "");
   const { data, isLoading } = useGetMessageByIdQuery(id || "");
-  
+
   // Use type guard to safely determine the message
   const message: IMessage | undefined = React.useMemo(() => {
     if (isIMessage(messageFromCache)) {
       return messageFromCache;
     }
-    
+
     if (data?.message && isIMessage(data.message)) {
       return data.message;
     }
-    
+
     return undefined;
   }, [messageFromCache, data]);
 
@@ -66,15 +65,15 @@ const MessageDetail: React.FC = () => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return {
-      date: date.toLocaleDateString('fr-FR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+      date: date.toLocaleDateString("fr-FR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       }),
-      time: date.toLocaleTimeString('fr-FR', {
-        hour: '2-digit',
-        minute: '2-digit'
-      })
+      time: date.toLocaleTimeString("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
   };
 
@@ -84,7 +83,7 @@ const MessageDetail: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex items-center gap-2 text-gray-600">
           <Loader2 className="h-6 w-6 animate-spin" />
-          <span>Chargement...</span>
+          <span>Loading...</span>
         </div>
       </div>
     );
@@ -100,18 +99,21 @@ const MessageDetail: React.FC = () => {
               <div className="flex flex-col items-center space-y-4 text-center">
                 <XCircle className="h-12 w-12 text-red-500" />
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Message non trouvé</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Message not found
+                  </h2>
                   <p className="text-sm text-gray-500 mt-1">
-                    Le message que vous recherchez n'existe pas ou a été supprimé.
+                    The message you are looking for does not exist or has been
+                    deleted.
                   </p>
                 </div>
-                <Button 
-                  onClick={() => navigate(-1)} 
-                  variant="outline" 
+                <Button
+                  onClick={() => navigate(-1)}
+                  variant="outline"
                   className="mt-4"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Retour
+                  Back
                 </Button>
               </div>
             </CardContent>
@@ -134,33 +136,35 @@ const MessageDetail: React.FC = () => {
             className="mb-4 -ml-2"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Retour
+            Back
           </Button>
-          
+
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Détails du Message</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Message Details
+              </h1>
               <p className="text-gray-500 mt-1">
-                Consulter et gérer les informations du message
+                View and manage the message information
               </p>
             </div>
-            <Badge 
-              variant={message.status ? "default" : "secondary"} 
+            <Badge
+              variant={message.status ? "default" : "secondary"}
               className={`${
-                message.status 
-                  ? 'bg-green-100 text-green-800 hover:bg-green-100' 
-                  : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100'
+                message.status
+                  ? "bg-green-100 text-green-800 hover:bg-green-100"
+                  : "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
               }`}
             >
               {message.status ? (
                 <>
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  Traité
+                  Processed
                 </>
               ) : (
                 <>
                   <Clock className="h-3 w-3 mr-1" />
-                  En attente
+                  Pending
                 </>
               )}
             </Badge>
@@ -174,20 +178,22 @@ const MessageDetail: React.FC = () => {
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="w-5 h-5" />
-                  Contenu du Message
+                  Message Content
                 </CardTitle>
                 <CardDescription>
-                  Informations détaillées du message reçu
+                  Detailed information about the received message{" "}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Subject */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Sujet
+                    Subject
                   </label>
                   <div className="p-3 bg-gray-50 rounded-md border">
-                    <p className="text-gray-900 font-medium">{message.subject}</p>
+                    <p className="text-gray-900 font-medium">
+                      {message.subject}
+                    </p>
                   </div>
                 </div>
 
@@ -226,10 +232,10 @@ const MessageDetail: React.FC = () => {
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2">
                   <User className="w-5 h-5" />
-                  Informations Client
+                  Client Information
                 </CardTitle>
                 <CardDescription>
-                  Détails du client qui a envoyé le message
+                  Details of the client who sent the message
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -241,7 +247,9 @@ const MessageDetail: React.FC = () => {
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Nom complet</p>
+                    <p className="text-sm font-medium text-gray-500">
+                      Full Name
+                    </p>
                     <p className="text-lg font-semibold text-gray-900">
                       {message.client.fullName}
                     </p>
@@ -256,7 +264,9 @@ const MessageDetail: React.FC = () => {
                   <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-md border">
                     <Phone className="h-5 w-5 text-green-600" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-500">Téléphone</p>
+                      <p className="text-sm font-medium text-gray-500">
+                        Telephone
+                      </p>
                       <p className="text-gray-900 font-medium">
                         {message.client.telephone}
                       </p>
@@ -267,7 +277,9 @@ const MessageDetail: React.FC = () => {
                   <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-md border">
                     <MapPin className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-500">Adresse</p>
+                      <p className="text-sm font-medium text-gray-500">
+                        Address
+                      </p>
                       <p className="text-gray-900 font-medium leading-relaxed">
                         {message.client.address}
                       </p>
@@ -282,14 +294,13 @@ const MessageDetail: React.FC = () => {
 
                 {/* Client ID */}
                 <div className="text-xs text-gray-500">
-                  ID Client: <code className="bg-gray-100 px-1 py-0.5 rounded text-gray-700">
+                  ID Client:{" "}
+                  <code className="bg-gray-100 px-1 py-0.5 rounded text-gray-700">
                     {message.client._id}
                   </code>
                 </div>
               </CardContent>
             </Card>
-
-           
           </div>
         </div>
       </div>

@@ -50,6 +50,10 @@
       "title": "After-sales Service",
       "description": "No more security concerns"
     },
+    "service5": {
+      "title": "A team of artisans",
+      "description": " Skilled artisans with years of experience"
+    },
     "bottomText": "Discover our collection of artisanal tiles",
     "ctaButton": "View Our Products"
   },
@@ -68,17 +72,20 @@
     "form": {
       "title": "Send us a message",
       "fullName": "Full Name",
-      "email": "Email",
+      "address": "Address",
       "phone": "Phone",
       "subject": "Subject",
       "message": "Message",
       "required": "*",
+      "city": " City",
       "placeholders": {
         "name": "Your name",
         "email": "your@email.com",
         "phone": "+212 XXX XX XX XX",
         "subject": "Choose a subject",
-        "message": "Describe your request in detail..."
+        "message": "Describe your request in detail...",
+        "address": "Your address",
+        "city": "Your City"
       },
       "subjects": {
         "quote": "Request a quote",
@@ -96,19 +103,31 @@
       "title": "Our Contact Details",
       "phone": {
         "title": "Phone",
-        "numbers": ["+212 5XX XX XX XX", "+212 6XX XX XX XX"]
+        "numbers": [
+          "+212 5XX XX XX XX",
+          "+212 6XX XX XX XX"
+        ]
       },
       "email": {
         "title": "Email",
-        "addresses": ["contact@yourcompany.ma", "info@yourcompany.ma"]
+        "addresses": [
+          "contact@yourcompany.ma",
+          "info@yourcompany.ma"
+        ]
       },
       "address": {
         "title": "Address",
-        "lines": ["Fes, Morocco", "Artisans Quarter"]
+        "lines": [
+          "Fes, Morocco",
+          "Artisans Quarter"
+        ]
       },
       "hours": {
         "title": "Opening Hours",
-        "times": ["Mon - Fri: 9:00 AM - 6:00 PM", "Sat: 9:00 AM - 1:00 PM"]
+        "times": [
+          "Mon - Fri: 9:00 AM - 6:00 PM",
+          "Sat: 9:00 AM - 1:00 PM"
+        ]
       }
     },
     "social": {
@@ -142,5 +161,26 @@
     "stayUpdated": "Stay Updated",
     "enterEmail": "Enter your email",
     "copyright": "© {{year}} Zelij Capital. All rights reserved."
+  },
+  "collections": {
+    "title": "Our Collection",
+    "text": "Discover carefully curated products designed with attention to detail and quality craftsmanship.",
+    "add": "Add",
+    "inStock": "in stock",
+    "outOfStock": "Out of stock",
+    "quickAdd": "Quick add",
+    "Color": "Color"
+  },
+  "sheet": {
+    "shoppingCart": "Shopping Cart",
+    "items": "Items",
+    "Size": "Size",
+    "Subtotal": "Subtotal",
+    "Total": "Total",
+    "Checkout": "Checkout",
+    "buttonOne": "Continue Shopping",
+    "startShopping": "Start shopping to add items to your cart",
+    "emptyCart": "Your cart is empty",
+    "currency": "MAD"
   }
 }

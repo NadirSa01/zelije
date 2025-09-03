@@ -6,6 +6,10 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { useEffect, useRef } from "react";
 import ContactPage from "./pages/contact/comps/concatc";
 import { CardDemo } from "./pages/TestShadcn";
+import Products from "./pages/products/products";
+import SheetCart from "./pages/sheet/sheetCart";
+import OrderDetails from "./pages/confirmeOrder/detailsOrders/detailsOrder";
+import CheckoutForm from "./pages/confirmeOrder/clientInfo/clientInfo";
 function ClientApp() {
   const Xref = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -23,11 +27,14 @@ function ClientApp() {
     <div ref={Xref} style={{ height: "100vh", overflowY: "auto" }}>
       <LanguageProvider>
         <NavBar />
+        <SheetCart/>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/collections" element={<div>Collections</div>} />
+          <Route path="/collections" element={<Products/>} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/cart" element={<CardDemo/>} />
+          <Route path="/order" element={<OrderDetails/>} />
+          <Route path="/checkout" element={<CheckoutForm/>} />
         </Routes>
         <Footer />
       </LanguageProvider>

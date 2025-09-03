@@ -4,8 +4,6 @@ const OrderSchema = new mongoose.Schema(
   {
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: "Client", required: true },
     state: { type: String, default: "pending" },
-    installationRequired: { type: Boolean, default: false },
-    installationCost: { type: Number, default: 0 }
   },
   { timestamps: true }
 );

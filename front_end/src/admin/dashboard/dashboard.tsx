@@ -1,10 +1,10 @@
-import Order from "./components/order";
+import OrderTable from "./components/table/orderTable";
 
 function Dashboard(){
     return(
         <div>
             <div>
-                <Order />
+                <OrderTable />
             </div>
         </div>
     )

@@ -2,45 +2,42 @@ import asyncHandler from "express-async-handler";
 import mongoose from "mongoose";
 import Order from "../models/orderModel.mjs";
 import OrderLine from "../models/OrderLineModel.mjs";
+import Client from "../models/clientModel.mjs";
+import Product from "../models/productModel.mjs";
 // ---------------------------
 // Create order + lines
 // ---------------------------
 export const createOrder = asyncHandler(async (req, res) => {
-  const { clientId, address, installationRequired, installationCost, cart } = req.body;
-
+  const { data, orderPayload } = req.body;
   try {
-    // Step 1: create the order
-    const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0) + (installationRequired ? installationCost : 0);
 
-    const order = await Order.create({
-      clientId,
-      address,
-      state: "pending",
-      price: totalPrice,
-      installationRequired: installationRequired || false,
-      installationCost: installationCost || 0,
-    });
+    const client = await Client.create(data); 
 
-    // Step 2: create all order lines
-    const orderLines = await Promise.all(
-      cart.map((item) =>
-        OrderLine.create({
-          orderId: order._id,
-          productId: item.productId,
-          productDetailId: item.productDetailId,
-          quantity: item.quantity,
-          price: item.price,
+    const order = await Order.create({ clientId: client._id });
+
+    if (order) {
+      await Promise.all(
+        orderPayload.map(async (element) => {
+          const findProduct = await Product.findById(element.productId);
+          if (!findProduct) {
+            throw new Error(`Product not found: ${element.productId}`);
+          }
+
+          await OrderLine.create({
+            orderId: order._id,
+            productId: findProduct._id, // use correct field
+            productDetailId: element.productDetailId, // must be ObjectId if schema requires it
+            quantity: element.quantity,
+            price: findProduct.price,
+          });
         })
-      )
-    );
+      );
 
-    return res.status(201).json({
-      message: "Order created successfully",
-      order,
-      orderLines,
-    });
+      return res.status(200).json({ message: "Order created with success" });
+    }
   } catch (error) {
-    return res.status(500).json({ message: "Error creating order", error });
+    console.error(error);
+    res.status(500).json({ message: error.message || "Server error" });
   }
 });
 
@@ -49,22 +46,33 @@ export const createOrder = asyncHandler(async (req, res) => {
 // ---------------------------
 export const getOrders = asyncHandler(async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 }).lean();
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .populate("clientId") 
+      .lean();
 
-    // populate lines manually
-    const orderIds = orders.map(o => o._id);
+    const orderIds = orders.map((o) => o._id);
+
     const lines = await OrderLine.find({ orderId: { $in: orderIds } }).lean();
 
-    const ordersWithLines = orders.map(order => ({
+    const ordersWithDetails = orders.map((order) => ({
       ...order,
-      orderLines: lines.filter(line => line.orderId.toString() === order._id.toString())
+      orderLines: lines.filter(
+        (line) => line.orderId.toString() === order._id.toString()
+      ),
     }));
 
-    return res.status(200).json({ total: orders.length, orders: ordersWithLines });
+    return res.status(200).json({
+      total: orders.length,
+      orders: ordersWithDetails,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Error fetching orders", error });
   }
 });
+
+
+
 
 // ---------------------------
 // Get single order by ID
@@ -89,7 +97,14 @@ export const getOrderById = asyncHandler(async (req, res) => {
 // ---------------------------
 export const updateOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.params;
-  const { clientId, state, price, installationRequired, installationCost, orderLines } = req.body;
+  const {
+    clientId,
+    state,
+    price,
+    installationRequired,
+    installationCost,
+    orderLines,
+  } = req.body;
 
   try {
     // Step 1: find the order
@@ -100,7 +115,8 @@ export const updateOrder = asyncHandler(async (req, res) => {
     order.clientId = clientId || order.clientId;
     order.state = state || order.state;
     order.price = price ?? order.price;
-    order.installationRequired = installationRequired ?? order.installationRequired;
+    order.installationRequired =
+      installationRequired ?? order.installationRequired;
     order.installationCost = installationCost ?? order.installationCost;
 
     await order.save();
@@ -109,7 +125,7 @@ export const updateOrder = asyncHandler(async (req, res) => {
     await OrderLine.deleteMany({ orderId });
 
     if (Array.isArray(orderLines) && orderLines.length > 0) {
-      const newLines = orderLines.map(line => ({
+      const newLines = orderLines.map((line) => ({
         orderId,
         productId: line.productId,
         productDetailId: line.productDetailId,
@@ -121,7 +137,9 @@ export const updateOrder = asyncHandler(async (req, res) => {
 
     return res.status(200).json({ message: "Order updated successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "Error updating order", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error updating order", error: error.message });
   }
 });
 
@@ -145,6 +163,8 @@ export const deleteOrder = asyncHandler(async (req, res) => {
 
     return res.status(200).json({ message: "Order deleted successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "Error deleting order", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error deleting order", error: error.message });
   }
 });

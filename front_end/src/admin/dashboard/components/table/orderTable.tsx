@@ -1,31 +1,40 @@
 import { DataTable } from "./dataTable";
 import { getColumns } from "./columns";
-import {  Package } from "lucide-react";
+import { Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast, Toaster } from "sonner";
-import {
-  useDeleteMessageMutation,
-  useGetMessagesQuery,
-} from "@/services/messages/messageApi";
+import { useDeleteOrderMutation } from "@/services/orders/orderApi"; // Changed from message to order
 import { useEffect } from "react";
+import { useGetOrderQuery } from "@/services/orders/orderApi";
 
-function MessageTable() {
-  const { data, isLoading, isError, refetch } = useGetMessagesQuery();
+function OrderTable() {
+  const { data, isLoading, isError, refetch } = useGetOrderQuery();
+  console.log("Order data:", data);
+  
   useEffect(() => {
     refetch(); 
   }, [refetch]);
-  const [deleteMessage] = useDeleteMessageMutation();
+
+  // Changed to use order deletion instead of message
+  const [deleteOrder] = useDeleteOrderMutation();
+  
   const onDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this message?")) {
-      await deleteMessage(id)
+    if (window.confirm("Are you sure you want to delete this order?")) {
+      await deleteOrder(id)
         .unwrap()
         .then(() => {
-          toast.success("Message deleted with success");
+          toast.success("Order deleted successfully");
+          refetch(); // Refetch data after successful deletion
         })
-        .catch((err) => console.error("Error deleting message:", err));
+        .catch((err) => {
+          console.error("Error deleting order:", err);
+          toast.error("Failed to delete order");
+        });
     }
   };
+
   const columns = getColumns(onDelete);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -77,13 +86,13 @@ function MessageTable() {
             <Package className="w-8 h-8 text-red-500" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Error Loading Products
+            Error Loading Orders
           </h3>
           <p className="text-gray-500 mb-4">
-            Unable to fetch product data. Please try again.
+            Unable to fetch order data. Please try again.
           </p>
           <Button
-            onClick={() => window.location.reload()}
+            onClick={() => refetch()}
             className="bg-gray-950 hover:bg-gray-800"
           >
             Retry
@@ -92,35 +101,85 @@ function MessageTable() {
       </div>
     );
   }
+
+  // Calculate stats from orders
+  const orders = data?.orders || [];
+  const totalOrders = orders.length;
+  const pendingOrders = orders.filter((order) => order.state === 'pending').length;
+  const completedOrders = orders.filter((order) => order.state === 'completed').length;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Toaster richColors position="top-right" />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <Toaster richColors position="top-right" />
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Messages Management
+                Orders Management
               </h1>
-              <p className="text-gray-600"> Manage your product Message</p>
+              <p className="text-gray-600">Manage your orders and track their status</p>
             </div>
           </div>
         </div>
+
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"></div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Orders</p>
+                <p className="text-2xl font-bold text-gray-900">{totalOrders}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <Package className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Pending Orders</p>
+                <p className="text-2xl font-bold text-yellow-600">{pendingOrders}</p>
+              </div>
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                <Package className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Completed Orders</p>
+                <p className="text-2xl font-bold text-green-600">{completedOrders}</p>
+              </div>
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <Package className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Main Table Card */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
               <Package className="w-5 h-5" />
-              Message
+              Orders
             </h2>
           </div>
           <div className="p-6">
-            <DataTable columns={columns} data={data?.messages ?? []} />
+            <DataTable 
+              columns={columns} 
+              data={orders} 
+              title="Orders"
+              description="View and manage all orders"
+              onRefresh={refetch}
+              loading={isLoading}
+            />
           </div>
         </div>
       </div>
@@ -128,4 +187,4 @@ function MessageTable() {
   );
 }
 
-export default MessageTable;
+export default OrderTable;

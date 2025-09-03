@@ -76,13 +76,17 @@
       "phone": "الهاتف",
       "subject": "الموضوع",
       "message": "الرسالة",
+      "address": "عنوان",
+      "city": "مدينة",
       "required": "*",
       "placeholders": {
         "name": "اسمك",
         "email": "بريدك@الإلكتروني.com",
         "phone": "+212 XXX XX XX XX",
         "subject": "اختر موضوعاً",
-        "message": "صف طلبك بالتفصيل..."
+        "message": "صف طلبك بالتفصيل...",
+        "address": "عنوانك",
+        "city": "مدينتك"
       },
       "subjects": {
         "quote": "طلب تسعير",
@@ -100,19 +104,31 @@
       "title": "معلومات الاتصال",
       "phone": {
         "title": "الهاتف",
-        "numbers": ["+212 5XX XX XX XX", "+212 6XX XX XX XX"]
+        "numbers": [
+          "+212 5XX XX XX XX",
+          "+212 6XX XX XX XX"
+        ]
       },
       "email": {
         "title": "البريد الإلكتروني",
-        "addresses": ["contact@yourcompany.ma", "info@yourcompany.ma"]
+        "addresses": [
+          "contact@yourcompany.ma",
+          "info@yourcompany.ma"
+        ]
       },
       "address": {
         "title": "العنوان",
-        "lines": ["فاس، المغرب", "حي الحرفيين"]
+        "lines": [
+          "فاس، المغرب",
+          "حي الحرفيين"
+        ]
       },
       "hours": {
         "title": "ساعات العمل",
-        "times": ["الاثنين - الجمعة: 9:00 صباحاً - 6:00 مساءً", "السبت: 9:00 صباحاً - 1:00 مساءً"]
+        "times": [
+          "الاثنين - الجمعة: 9:00 صباحاً - 6:00 مساءً",
+          "السبت: 9:00 صباحاً - 1:00 مساءً"
+        ]
       }
     },
     "social": {
@@ -146,5 +162,26 @@
     "stayUpdated": "ابق على اطلاع",
     "enterEmail": "أدخل بريدك الإلكتروني",
     "copyright": "© {{year}} زليج كابيتال. جميع الحقوق محفوظة."
+  },
+  "collections": {
+    "title": "مجموعتنا",
+    "text": "اكتشف منتجات مختارة بعناية مصممة مع الاهتمام بالتفاصيل والحرفية عالية الجودة.",
+    "add": "إضافة",
+    "inStock": "متوفر",
+    "outOfStock": "غير متوفر",
+    "quickAdd": "إضافة سريعة",
+    "Color": "لون"
+  },
+  "sheet": {
+    "shoppingCart": "سلة التسوق",
+    "items": "العناصر",
+    "Size": "الحجم",
+    "Subtotal": "المجموع الفرعي",
+    "Total": "الإجمالي",
+    "Checkout": "الدفع",
+    "buttonOne": "متابعة التسوق",
+    "startShopping": "ابدأ التسوق لإضافة عناصر إلى عربة التسوق الخاصة بك",
+    "emptyCart": "عربة التسوق فارغة",
+    "currency": "درهم "
   }
 }

@@ -20,6 +20,14 @@ export const messageApi = createApi({
             ]
           : [{ type: "Message" as const, id: "LIST" }],
     }),
+    createMessage:builder.mutation({
+      query:(message)=>({
+        url : "/message",
+        method:"POST",
+        body : message,
+      }),
+      invalidatesTags:["Message"],
+    }),
     deleteMessage: builder.mutation<void, string>({
       query: (messageId) => ({
         url: `/message/${messageId}`,
@@ -40,5 +48,6 @@ export const messageApi = createApi({
 export const { 
   useGetMessagesQuery, 
   useDeleteMessageMutation, 
-  useGetMessageByIdQuery 
+  useGetMessageByIdQuery ,
+  useCreateMessageMutation
 } = messageApi;
