@@ -13,15 +13,13 @@ import type { ColumnDef } from "@tanstack/react-table";
 import {
   MoreHorizontal,
   Eye,
-  Trash2,
+  // Trash2,
   Copy,
   Phone,
   MapPin,
   User,
   ArrowUpDown,
   MessageCircleMore,
-
-  Package,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -39,7 +37,7 @@ export const getColumns = (
     cell: ({ row }) => {
       const order = row.original;
       const fullName = order?.clientId?.fullName;
-      
+
       return (
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -67,20 +65,26 @@ export const getColumns = (
 
       return (
         <div className="flex items-center gap-2">
-          <span className="text-gray-600 font-mono">
-            {telephone || "N/A"}
-          </span>
+          <span className="text-gray-600 font-mono">{telephone || "N/A"}</span>
         </div>
       );
     },
   },
   {
     accessorKey: "state",
-    header: () => {
+    header: ({ column }) => {
       return (
         <div className="flex items-center gap-2 font-semibold text-gray-700">
           <MessageCircleMore className="h-4 w-4" />
-          Status
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="h-8 px-2 lg:px-3"
+          >
+            {" "}
+            Status
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
         </div>
       );
     },
@@ -103,44 +107,53 @@ export const getColumns = (
 
       return (
         <div className="flex items-center gap-2">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(status)}`}>
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(
+              status
+            )}`}
+          >
             {status || "Unknown"}
           </span>
         </div>
       );
     },
   },
-   {
+  {
     accessorKey: "orderLines",
-    header: ({column}) => (
+    header: ({ column }) => (
       <div className="flex items-center gap-2 font-semibold text-gray-700">
-         <Button 
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="h-8 px-2 lg:px-3"
-      >
-        Order Summary
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-8 px-2 lg:px-3"
+        >
+          Order Summary
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
       </div>
     ),
     cell: ({ row }) => {
       const orderLines = row.getValue<any[]>("orderLines") || [];
-      const totalQuantity = orderLines.reduce((sum, line) => sum + (line.quantity || 0), 0);
-      
+      const totalQuantity = orderLines.reduce(
+        (sum, line) => sum + (line.quantity || 0),
+        0
+      );
+
       // Calculate total price from all order lines
       const totalPrice = orderLines.reduce((sum, line) => {
-        const price = parseFloat(line.price?.$numberDecimal || '0');
+        const price = parseFloat(line.price?.$numberDecimal || "0");
         const quantity = line.quantity || 0;
-        return sum + (price * quantity);
+        return sum + price * quantity;
       }, 0);
 
       return (
         <div className="space-y-1">
           <div className="text-gray-600 text-sm">
-            {orderLines.length} item{orderLines.length !== 1 ? 's' : ''} 
+            {orderLines.length} item{orderLines.length !== 1 ? "s" : ""}
             {totalQuantity > 0 && (
-              <span className="text-xs text-gray-500 ml-1">({totalQuantity} qty)</span>
+              <span className="text-xs text-gray-500 ml-1">
+                ({totalQuantity} qty)
+              </span>
             )}
           </div>
           {totalPrice > 0 && (
@@ -163,7 +176,7 @@ export const getColumns = (
     cell: ({ row }) => {
       const address = row.original.clientId?.address;
       const city = row.original.clientId?.city;
-      
+
       return (
         <div className="max-w-[200px]">
           <span
@@ -238,7 +251,7 @@ export const getColumns = (
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="my-1 border-gray-100" />
 
-              <Link to={`detail/${order?._id}`}>
+              <Link to={`order/${order?._id}`}>
                 <DropdownMenuItem className="px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 cursor-pointer rounded-md flex items-center gap-2 transition-colors">
                   <Eye className="h-4 w-4" />
                   View Details
@@ -253,15 +266,15 @@ export const getColumns = (
                 Copy ID
               </DropdownMenuItem>
 
-              <DropdownMenuSeparator className="my-1 border-gray-100" />
+              {/* <DropdownMenuSeparator className="my-1 border-gray-100" /> */}
 
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onClick={handleDelete}
                 className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer rounded-md flex items-center gap-2 transition-colors"
               >
                 <Trash2 className="h-4 w-4" />
                 Delete Order
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

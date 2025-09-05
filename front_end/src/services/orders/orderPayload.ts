@@ -29,7 +29,8 @@ export interface orders{
     createdAt?:string;
     updatedAt?:string;
     __v?:number;
-    orderLines:orderLine[]
+    orderLines:orderLine[];
+    client:IClient
 }
 export interface payloadOrderGET{
     total:number;

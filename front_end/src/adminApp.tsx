@@ -14,6 +14,7 @@ import UpdateService from "./admin/services/components/update/updateService";
 import ClientUpdateProvider from "./contexts/common/provider";
 import Messages from "./admin/message/message";
 import MessageDetail from "./admin/message/components/detail/messageDetail";
+import OrderDetail from "./admin/dashboard/components/detailsOrder/orderDetail";
 
 function AdminApp() {
   const Xref = useRef<HTMLDivElement>(null);
@@ -35,6 +36,7 @@ function AdminApp() {
         <NavBar />
         <Routes>
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard/order/:id" element={<OrderDetail />} />
           <Route path="clients" element={<Clients />} />
           <Route path="profile" element={<Profile />} />
           <Route path="products" element={<Products />} />

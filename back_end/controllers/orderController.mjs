@@ -10,8 +10,7 @@ import Product from "../models/productModel.mjs";
 export const createOrder = asyncHandler(async (req, res) => {
   const { data, orderPayload } = req.body;
   try {
-
-    const client = await Client.create(data); 
+    const client = await Client.create(data);
 
     const order = await Order.create({ clientId: client._id });
 
@@ -25,8 +24,8 @@ export const createOrder = asyncHandler(async (req, res) => {
 
           await OrderLine.create({
             orderId: order._id,
-            productId: findProduct._id, // use correct field
-            productDetailId: element.productDetailId, // must be ObjectId if schema requires it
+            productId: findProduct._id,
+            productDetailId: element.productDetailId,
             quantity: element.quantity,
             price: findProduct.price,
           });
@@ -48,7 +47,7 @@ export const getOrders = asyncHandler(async (req, res) => {
   try {
     const orders = await Order.find()
       .sort({ createdAt: -1 })
-      .populate("clientId") 
+      .populate("clientId")
       .lean();
 
     const orderIds = orders.map((o) => o._id);
@@ -71,9 +70,6 @@ export const getOrders = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
 // ---------------------------
 // Get single order by ID
 // ---------------------------
@@ -84,11 +80,96 @@ export const getOrderById = asyncHandler(async (req, res) => {
     const order = await Order.findById(orderId).lean();
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    const lines = await OrderLine.find({ orderId }).lean();
+    const client = await Client.findById(order.clientId).lean();
+    if (!client) return res.status(404).json({ message: "Client not found" });
 
-    return res.status(200).json({ ...order, orderLines: lines });
+    // aggregate OrderLines with ProductDetail
+    const lines = await OrderLine.aggregate([
+      { $match: { orderId: new mongoose.Types.ObjectId(orderId) } },
+      {
+        $lookup: {
+          from: "productdetails", // collection name (lowercase + plural of model)
+          localField: "productDetailId",
+          foreignField: "_id",
+          as: "productDetail",
+        },
+      },
+      { $unwind: "$productDetail" }, // flatten array
+      {
+        $lookup: {
+          from: "products", // if you also want product info
+          localField: "productId",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      { $unwind: "$product" },
+      {
+        $project: {
+          _id: 1,
+          orderId: 1,
+          quantity: 1,
+          price: { $toDouble: "$price" }, // convert Decimal128 → number
+          createdAt: 1,
+          updatedAt: 1,
+          "product._id": 1,
+          "product.name": 1,
+          "productDetail._id": 1,
+          "productDetail.picture": 1,
+          "productDetail.colorName": 1,
+          "productDetail.colorCode": 1,
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      ...order,
+      client,
+      orderLines: lines,
+    });
   } catch (error) {
-    return res.status(500).json({ message: "Error fetching order", error });
+    return res
+      .status(500)
+      .json({ message: "Error fetching order", error: error.message });
+  }
+});
+
+export const updateQuantity = asyncHandler(async (req, res) => {
+  const { orderLineId } = req.params;
+  const { newqty } = req.body;
+
+  
+  try {
+    const order = await OrderLine.findByIdAndUpdate(
+      { _id: orderLineId },
+      { quantity: newqty }
+    );
+    res.status(200).json({message : "Quantity updated with success"})
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+export const updateState = asyncHandler(async (req, res) => {
+  const { orderId } = req.params;
+  const { state } = req.body;
+
+  try {
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { state },
+      { new: true }
+    )
+      .populate("clientId")
+      .lean();
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    return res.status(200).json({ order });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
   }
 });
 

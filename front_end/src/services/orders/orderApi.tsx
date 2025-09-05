@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { orderPayload, payloadOrderGET } from "./orderPayload";
+import type { orderPayload, orders, payloadOrderGET } from "./orderPayload";
 
 export const orderApi = createApi({
   reducerPath: "orderApi",
@@ -19,6 +19,27 @@ export const orderApi = createApi({
             ]
           : [{ type: "Order" as const, id: "LIST" }],
     }),
+    getOrderById: builder.query<orders, string>({
+      query: (orderId) => `order/${orderId}`,
+      providesTags: (result, error, id) => [{ type: "Order", id }],
+    }),
+    updateOrderQuantity: builder.mutation<void, {orderLineId:string,newqty:number}>({
+      query: ({orderLineId,newqty}) => ({
+        url: `order/quantity/${orderLineId}`,
+        method: "PUT",
+        body: {newqty},
+      }),
+      invalidatesTags: ["Order"],
+    }),
+    updateOrderState: builder.mutation<void, { orderId: string; state: string }>(
+      {
+        query: ({ orderId, state }) => ({
+          url: `order/${orderId}`,
+          method: "PUT",
+          body: { state },
+        }),
+      }
+    ),
     addOrder: builder.mutation({
       query: ({ data, orderPayload }: orderPayload) => ({
         url: `/order`,
@@ -36,4 +57,11 @@ export const orderApi = createApi({
     }),
   }),
 });
-export const { useAddOrderMutation, useGetOrderQuery,useDeleteOrderMutation } = orderApi;
+export const {
+  useUpdateOrderQuantityMutation,
+  useAddOrderMutation,
+  useGetOrderQuery,
+  useDeleteOrderMutation,
+  useGetOrderByIdQuery,
+  useUpdateOrderStateMutation
+} = orderApi;
