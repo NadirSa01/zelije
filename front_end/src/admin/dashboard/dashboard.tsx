@@ -1,10 +1,11 @@
-import OrderTable from "./components/table/orderTable";
+import OrdersServicesChart from "./charts/orderCharts/chartOrder";
 
+ 
 function Dashboard(){
     return(
         <div>
             <div>
-                <OrderTable />
+                <OrdersServicesChart/>
             </div>
         </div>
     )

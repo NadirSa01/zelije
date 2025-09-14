@@ -11,7 +11,7 @@ export const createService = asyncHandler(async (req, res) => {
     !description ||
     highPrice == null ||
     lowPrice == null ||
-    !image ||
+    !image || 
     image.length === 0
   ) {
     return res.status(400).json({
@@ -69,11 +69,12 @@ export const updateService = asyncHandler(async (req, res) => {
   const { serviceId } = req.params;
 
   const { payload } = req.body;
-
+  
   try {
     const service = await Service.findByIdAndUpdate(
       { _id: serviceId },
-      payload
+      payload,
+      { new: true }
     );
     if (!service) return res.status(404).json({ message: "Service not found" });
 

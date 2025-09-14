@@ -15,7 +15,7 @@ function OrderTable() {
   const [filteredOrders, setFilteredOrders] = useState([]);
 
   const { data, isLoading, isError, refetch } = useGetOrderQuery();
-
+  
   useEffect(() => {
     refetch();
   }, [refetch]);

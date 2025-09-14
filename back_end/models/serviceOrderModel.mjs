@@ -18,6 +18,11 @@ const ServiceOrderModel = new mongoose.Schema(
       enum: ["pending", "in_progress", "completed", "cancelled"],
       default: "pending",
     },
+    price:{
+      type:Number,
+      required:false,
+      default:0
+      }
   },
   { timestamps: true }
 );

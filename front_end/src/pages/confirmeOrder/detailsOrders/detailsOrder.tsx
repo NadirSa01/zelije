@@ -117,9 +117,7 @@ const OrderDetails = () => {
           <h1 className="text-3xl font-bold text-gray-900">
             {t("sheet.shoppingCart")}
           </h1>
-          <p className="text-gray-600 mt-2">
-            Review your items and proceed to checkout
-          </p>
+       
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -285,7 +283,7 @@ const OrderDetails = () => {
                             </span>
                             <div className="flex items-center gap-2">
                               <span>
-                                Color: {getLocalizedText(product.colorName)}
+                                {t("collections.Color")} : {getLocalizedText(product.colorName)}
                               </span>
                               <div
                                 className="w-4 h-4 rounded-full border border-gray-300"
@@ -366,7 +364,7 @@ const OrderDetails = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-8">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                Order Summary
+                {t("sheet.OrderSummary")}
               </h2>
 
               <div className="space-y-4 mb-6">
@@ -379,32 +377,12 @@ const OrderDetails = () => {
                   </span>
                 </div>
 
-                {/* <div className="flex justify-between text-gray-600">
-                  <span>Shipping</span>
-                  <span className={shipping === 0 ? "text-green-600 font-medium" : ""}>
-                    {shipping === 0 ? "Free" : `${shipping} ${t("sheet.currency")}`}
-                  </span>
-                </div> */}
-
-                {/* <div className="flex justify-between text-gray-600">
-                  <span>Tax (10%)</span>
-                  <span>{tax.toFixed(2)} {t("sheet.currency")}</span>
-                </div>
-                 */}
-
-                {/* {subtotal < 1000 && (
-                  <div className="bg-blue-50 p-3 rounded-xl">
-                    <p className="text-sm text-blue-700">
-                      Add {(1000 - subtotal).toFixed(2)} {t("sheet.currency")}{" "}
-                      more for free shipping
-                    </p>
-                  </div>
-                )} */}
+             
               </div>
 
               <div className="border-t border-gray-200 pt-4 mb-6">
                 <div className="flex justify-between items-center">
-                  <span className="text-xl font-bold text-gray-900">Total</span>
+                  <span className="text-xl font-bold text-gray-900"> {t("sheet.Total")}</span>
                   <span className="text-2xl font-bold text-gray-900">
                     {total.toFixed(2)} {t("sheet.currency")}
                   </span>
@@ -423,16 +401,13 @@ const OrderDetails = () => {
               <div className="mt-6 space-y-3 text-sm text-gray-500">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span>Cash on Delivery available</span>
+                  <span>{t("sheet.advantage1")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span>Pay when you receive your order</span>
+                  <span>{t("sheet.advantage2")}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <span>Reliable after-sales service</span>
-                </div>
+
               </div>
             </div>
           </div>

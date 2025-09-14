@@ -3,6 +3,7 @@
     "home": "Accueil",
     "collections": "Collections",
     "contact": "Contactez-nous",
+    "Services": "Nos Services",
     "cart": "Panier"
   },
   "home": {
@@ -71,14 +72,15 @@
     },
     "form": {
       "title": "Envoyez-nous un message",
+      "title2": "Informations du client",
       "fullName": "Nom complet",
-        "address": " Adresse",
+      "address": " Adresse",
       "phone": "Téléphone",
       "subject": "Sujet",
       "message": "Message",
       "required": "*",
-              "city": "Ville",
-
+      "city": "Ville",
+      "description": "Description",
       "placeholders": {
         "name": "Votre nom",
         "email": "votre@email.com",
@@ -86,7 +88,8 @@
         "subject": "Choisissez un sujet",
         "message": "Décrivez votre demande en détail...",
         "address": "Votre adresse",
-        "city": "Votre ville"
+        "city": "Votre ville",
+        "description": "Veuillez décrire ce dont vous avez besoin..."
       },
       "subjects": {
         "quote": "Demande de devis",
@@ -105,22 +108,19 @@
       "phone": {
         "title": "Téléphone",
         "numbers": [
-          "+212 5XX XX XX XX",
-          "+212 6XX XX XX XX"
+          "+212 6 0900-6229"
         ]
       },
       "email": {
         "title": "Email",
         "addresses": [
-          "contact@votreentreprise.ma",
-          "info@votreentreprise.ma"
+          "zellij.capital@gmail.com"
         ]
       },
       "address": {
         "title": "Adresse",
         "lines": [
-          "Fès, Maroc",
-          "Quartier des Artisans"
+          "Fès, Maroc"
         ]
       },
       "hours": {
@@ -141,7 +141,8 @@
     "whatsapp": {
       "title": "Contact Rapide",
       "description": "Besoin d'une réponse immédiate ? Contactez-nous sur WhatsApp !",
-      "button": "WhatsApp"
+      "button": "WhatsApp",
+      "message":"Bonjour, je suis intéressé par vos services. Pouvez-vous me donner plus de détails ?"
     }
   },
   "footer": {
@@ -182,6 +183,56 @@
     "buttonOne": "Continuer vos achats",
     "startShopping": "Commencez vos achats pour ajouter des articles à votre panier",
     "emptyCart": "Votre panier est vide",
-    "currency": "MAD"
+    "currency": "MAD",
+    "total":"Total",
+    "advantage1": "Paiement à la livraison disponible",
+    "advantage2": "Service après-vente fiable",
+    "OrderSummary":"Récapitulatif de la commande"
+  },
+  "service": {
+    "title1": "L’art de l’excellence dans",
+    "title2": "le design marocain",
+    "text": "Découvrez notre gamme de savoir-faire traditionnel marocain et de solutions de design moderne, où l’héritage rencontre l’innovation.",
+    "titleCard": "Vous ne trouvez pas le service dont vous avez besoin ?",
+    "textCard": "Pas de problème ! Vous pouvez demander un service personnalisé selon vos besoins. Cliquez sur le bouton ci-dessous pour nous contacter et nous le réaliserons pour vous.",
+    "call": "Appelez-nous ",
+    "email": "Écrivez-nous ",
+    "visit": "Visitez-nous",
+    "schedule": "Demander un service personnalisé",
+    "address": "Fes, Maroc",
+    "price": "Fourchette de prix par m²",
+    "cardButton": "Obtenir un devis",
+    "checkOutTitle":"Réserver un service",
+    "backButton":"Retour aux services",
+    "panierName":"Détails du service",
+    "sendButton":"Envoyer"
+  },
+  "ourStory": {
+    "title": "Notre Histoire",
+    "mainText": "Mohamed Borrached, un artisan marocain qualifié, a découvert sa passion pour le Zellige Beldi traditionnel dès son plus jeune âge, apprenant de sa famille à Fès. Au fil des années, son dévouement et son amour pour cet artisanat l'ont transformé en un vrai professionnel. Mohamed et son équipe ont travaillé sur de nombreux projets avec des clients de différentes villes, apportant toujours la beauté et l'héritage du Zellige marocain à la vie. Enraciné à Fès, sa ville natale, la mission de Mohamed est de partager l'art et l'élégance du Zellige Beldi avec le monde.",
+    "artisanTitle": "Maître Artisan Zellige",
+    "ownerName":"Mohamed Borrached",
+    "location": {
+      "title": "Héritage de Fès",
+      "description": "Enraciné dans la ville historique de Fès, Maroc"
+    },
+    "team": {
+      "title": "Équipe d'Experts",
+      "description": "Artisans qualifiés préservant l'artisanat traditionnel"
+    },
+    "expertise": {
+      "title": "Excellence Professionnelle",
+      "description": "Des années de dévouement à perfectionner le Zellige Beldi"
+    },
+    "mission": {
+      "title": "Mission Mondiale",
+      "description": "Partager l'art et l'élégance marocains dans le monde"
+    },
+    "stats": {
+      "experience": "Années d'Expérience",
+      "projects": "Projets Réalisés",
+      "clients": "Clients Satisfaits",
+      "passion": "Passion Infinie"
+    }
   }
 }

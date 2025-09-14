@@ -41,7 +41,7 @@ const ActiveNavLink = ({
 function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { t } = useTranslation();
-  const dispatch =useDispatch();
+  const dispatch = useDispatch();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -64,7 +64,11 @@ function NavBar() {
                 {t("navigation.collections")}
               </ActiveNavLink>
             </NavigationMenuItem>
-
+            <NavigationMenuItem>
+              <ActiveNavLink to="/services">
+                {t("navigation.Services")}
+              </ActiveNavLink>
+            </NavigationMenuItem>
             <NavigationMenuItem className="mx-2 xl:mx-4">
               <NavigationMenuLink className="hover:opacity-90 transition-opacity">
                 <img
@@ -87,7 +91,9 @@ function NavBar() {
                 className={navigationMenuTriggerStyle()}
               >
                 <button
-                  onClick={()=>{dispatch(openSheet())}}
+                  onClick={() => {
+                    dispatch(openSheet());
+                  }}
                   className="relative inline-flex items-center justify-center hover:scale-110 transition-all duration-300"
                 >
                   {/* Modern Shopping Cart Icon */}
@@ -130,8 +136,9 @@ function NavBar() {
 
           {/* Cart Icon */}
           <button
-                              onClick={()=>{dispatch(openSheet())}}
-
+            onClick={() => {
+              dispatch(openSheet());
+            }}
             className="mr-4 hover:scale-110 transition-all duration-300"
           >
             <svg
@@ -195,21 +202,28 @@ function NavBar() {
               className="block py-3 px-4 rounded-md hover:bg-gray-100 transition-colors duration-200 font-medium"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Home
+              {t("navigation.home")}{" "}
             </Link>
             <Link
               to="/Collections"
               className="block py-3 px-4 rounded-md hover:bg-gray-100 transition-colors duration-200 font-medium"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Collections
+              {t("navigation.collections")}
+            </Link>
+            <Link
+              to="/services"
+              className="block py-3 px-4 rounded-md hover:bg-gray-100 transition-colors duration-200 font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {t("navigation.Services")}
             </Link>
             <Link
               to="/Contact"
               className="block py-3 px-4 rounded-md hover:bg-gray-100 transition-colors duration-200 font-medium"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Contact us
+              {t("navigation.contact")}
             </Link>
           </div>
         </div>

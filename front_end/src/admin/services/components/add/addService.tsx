@@ -26,12 +26,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useUploadProductImageMutation } from "@/services/products/productApi";
 import { useCreateServiceMutation } from "@/services/service/serviceApi";
-import { error } from "console";
 
 function AddService() {
-  const [imagePreview, setImagePreview] = useState<string>("");
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploadImage] = useUploadProductImageMutation();
-    const[createService]=useCreateServiceMutation(); 
+  const [createService] = useCreateServiceMutation(); 
+  
   const form = useForm<ServiceSchema>({
     resolver: zodResolver(serviceSchema),
     defaultValues: {
@@ -40,7 +40,7 @@ function AddService() {
       nameAr: "",
       highPrice: "",
       lowPrice: "",
-      picture: "",
+      picture: [], // This might need to be changed to an array depending on your schema
       descriptionEn: "",
       descriptionFr: "",
       descriptionAr: "",
@@ -49,38 +49,65 @@ function AddService() {
 
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    onChange: (value: string) => void
+    onChange: (value: string | string[]) => void
   ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const newImageUrls: string[] = [];
+    const newPreviews: string[] = [];
 
     try {
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      // Process each selected file
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        // Create preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          newPreviews.push(reader.result as string);
+          if (newPreviews.length === files.length) {
+            setImagePreviews(prev => [...prev, ...newPreviews]);
+          }
+        };
+        reader.readAsDataURL(file);
 
-      // Upload to MinIO
-      const formData = new FormData();
-      formData.append("image", file);
-      const result = await uploadImage(formData).unwrap();
+        // Upload to MinIO
+        const formData = new FormData();
+        formData.append("image", file);
+        const result = await uploadImage(formData).unwrap();
+        
+        console.log("MinIO URL received:", result.imageUrl);
+        newImageUrls.push(result.imageUrl);
+      }
 
-      console.log("MinIO URL received:", result.imageUrl);
-      onChange(result.imageUrl);
-
-      toast.success("Image uploaded successfully");
+      // Update form field with all image URLs
+      const currentImages = form.getValues("picture");
+      const allImages = currentImages ? 
+        (Array.isArray(currentImages) ? [...currentImages, ...newImageUrls] : [currentImages, ...newImageUrls]) :
+        newImageUrls;
+      
+      onChange(allImages);
+      toast.success(`${files.length} image(s) uploaded successfully`);
+      
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("Upload failed");
-      setImagePreview("");
+      // Reset previews on error
+      setImagePreviews(prev => prev.slice(0, prev.length - newPreviews.length));
     }
   };
 
-  const removeImage = (onChange: (value: string) => void) => {
-    onChange("");
-    setImagePreview("");
+  const removeImage = (index: number, onChange: (value: string | string[]) => void) => {
+    const currentImages = form.getValues("picture");
+    const imageArray = Array.isArray(currentImages) ? currentImages : [currentImages].filter(Boolean);
+    
+    // Remove from form data
+    const updatedImages = imageArray.filter((_, i) => i !== index);
+    onChange(updatedImages.length === 0 ? "" : updatedImages);
+    
+    // Remove from previews
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const onSubmit = (data: ServiceSchema) => {
@@ -97,16 +124,17 @@ function AddService() {
       },
       highPrice: data.highPrice,
       lowPrice: data.lowPrice,
-      image: data.picture,
+      image: data.picture, // This might need adjustment based on your API expectations
     };
 
-    if ( payload ) {
-        createService(payload).then(()=>{
-            toast.success("Service created successfully");
-            form.reset()
-        }).catch((err)=>{
-            toast.success(err.message);
-        })
+    if (payload) {
+      createService(payload).then(() => {
+        toast.success("Service created successfully");
+        form.reset();
+        setImagePreviews([]); // Clear image previews on successful submission
+      }).catch((err) => {
+        toast.error(err.message);
+      });
     }
   };
 
@@ -117,7 +145,7 @@ function AddService() {
         <ProdcutHeaders
           headerType={"Add New Service"}
           text={"Create a new service with image upload"}
-           backLink={"/admin/services"}
+          backLink={"/admin/services"}
           name={"Service   "}
         />
       </div>
@@ -208,19 +236,20 @@ function AddService() {
                   )}
                 />
 
-                {/* Service Image */}
+                {/* Service Images - Multiple Upload */}
                 <FormField
                   control={form.control}
                   name="picture"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Service Image</FormLabel>
+                      <FormLabel>Service Images</FormLabel>
                       <FormControl>
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                           <div className="flex items-center gap-2">
                             <Input
                               type="file"
                               accept="image/*"
+                              multiple // Enable multiple file selection
                               onChange={(e) =>
                                 handleImageChange(e, field.onChange)
                               }
@@ -238,28 +267,31 @@ function AddService() {
                               }
                             >
                               <Upload className="w-4 h-4" />
-                              Choose Image
+                              Choose Images
                             </Button>
-                            {field.value && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                className="text-red-600 hover:text-red-700"
-                                onClick={() => removeImage(field.onChange)}
-                              >
-                                <X className="w-4 h-4" />
-                              </Button>
-                            )}
                           </div>
 
-                          {(field.value || imagePreview) && (
-                            <div className="mt-2">
-                              <img
-                                src={field.value || imagePreview}
-                                alt="Service preview"
-                                className="w-20 h-20 object-cover rounded-md border border-gray-300"
-                              />
+                          {/* Display all uploaded images */}
+                          {(imagePreviews.length > 0 || field.value) && (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                              {imagePreviews.map((preview, index) => (
+                                <div key={index} className="relative group">
+                                  <img
+                                    src={preview}
+                                    alt={`Service preview ${index + 1}`}
+                                    className="w-20 h-20 object-cover rounded-md border border-gray-300"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="absolute -top-2 -right-2 w-6 h-6 p-0 text-red-600 hover:text-red-700 bg-white border border-gray-300 rounded-full"
+                                    onClick={() => removeImage(index, field.onChange)}
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              ))}
                             </div>
                           )}
                         </div>

@@ -212,7 +212,7 @@ const OrderDetail: React.FC = () => {
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Order Not Found</h3>
             <p className="text-gray-500 mb-6">The requested order could not be found.</p>
-            <Button onClick={() => navigate('dashboard/order')} className="w-full">
+            <Button onClick={() => navigate('orders/order')} className="w-full">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Orders
             </Button>
@@ -233,7 +233,7 @@ const OrderDetail: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
           <Button
             variant="outline"
-            onClick={() => navigate('/admin/dashboard')}
+            onClick={() => navigate('/admin/orders')}
             className="w-fit"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />

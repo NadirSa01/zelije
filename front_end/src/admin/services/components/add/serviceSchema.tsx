@@ -20,9 +20,9 @@ export const serviceSchema = z.object({
   lowPrice: z
     .string()
     .min(1, { message: "Price must be a positive number" })
-    .optional(),
+    .optional()  ,
     picture:z
-    .string()
+    .array(z.string())
     .min(1,{message:"Name must be at least 2 characters"})
     ,
     descriptionEn:z

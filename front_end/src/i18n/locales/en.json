@@ -3,6 +3,7 @@
     "home": "Home",
     "collections": "Collections",
     "contact": "Contact us",
+    "Services": "Our Services",
     "cart": "Cart"
   },
   "home": {
@@ -71,6 +72,7 @@
     },
     "form": {
       "title": "Send us a message",
+      "title2": "Customer Information",
       "fullName": "Full Name",
       "address": "Address",
       "phone": "Phone",
@@ -78,6 +80,7 @@
       "message": "Message",
       "required": "*",
       "city": " City",
+      "description": "Description",
       "placeholders": {
         "name": "Your name",
         "email": "your@email.com",
@@ -85,7 +88,8 @@
         "subject": "Choose a subject",
         "message": "Describe your request in detail...",
         "address": "Your address",
-        "city": "Your City"
+        "city": "Your City",
+        "description": "Please describe what you need..."
       },
       "subjects": {
         "quote": "Request a quote",
@@ -104,22 +108,19 @@
       "phone": {
         "title": "Phone",
         "numbers": [
-          "+212 5XX XX XX XX",
-          "+212 6XX XX XX XX"
+          "+212 6 0900-6229"
         ]
       },
       "email": {
         "title": "Email",
         "addresses": [
-          "contact@yourcompany.ma",
-          "info@yourcompany.ma"
+          "zellij.capital@gmail.com"
         ]
       },
       "address": {
         "title": "Address",
         "lines": [
-          "Fes, Morocco",
-          "Artisans Quarter"
+          "Fes, Morocco"
         ]
       },
       "hours": {
@@ -140,7 +141,8 @@
     "whatsapp": {
       "title": "Quick Contact",
       "description": "Need an immediate response? Contact us on WhatsApp!",
-      "button": "WhatsApp"
+      "button": "WhatsApp",
+      "message":"Hello, I’m interested in your services. Can you give me more details?"
     }
   },
   "footer": {
@@ -181,6 +183,56 @@
     "buttonOne": "Continue Shopping",
     "startShopping": "Start shopping to add items to your cart",
     "emptyCart": "Your cart is empty",
-    "currency": "MAD"
+    "currency": "MAD",
+    "total": "Total",
+    "advantage1": "Cash on Delivery available",
+    "advantage2": "Reliable after-sales service",
+    "OrderSummary":"Order Summary"
+  },
+  "service": {
+    "title1": "Crafting Excellence in ",
+    "title2": "Moroccan Design",
+    "text": "Discover our range of traditional Moroccan craftsmanship and modern design solutions, where heritage meets innovation.",
+    "titleCard": "Can’t find the service you need?",
+    "textCard": "Don’t worry! You can request a custom service tailored to your needs. Click the button below to contact us and we’ll make it happen.",
+    "call": "Call Us ",
+    "email": "Email Us ",
+    "visit": "Visit Us",
+    "schedule": "Request Your Custom Service",
+    "address": "Fes, Morocco",
+    "price": "Price Range for m²",
+    "cardButton": "Get a Quote",
+    "checkOutTitle": "Book Service",
+    "backButton": "Back to Services",
+    "panierName": "Service Details",
+    "sendButton": "Send"
+  },
+  "ourStory": {
+    "title": "Our Story",
+    "mainText": "Mohamed Borrached, a skilled Moroccan artisan, discovered his passion for traditional Zellige Beldi at a young age, learning from his family in Fes. Over the years, his dedication and love for this craft turned him into a true professional. Mohamed and his team have worked on numerous projects with clients across different cities, always bringing the beauty and heritage of Moroccan Zellige to life. Rooted in Fes, his hometown, Mohamed's mission is to share the art and elegance of Zellige Beldi with the world.",
+    "artisanTitle": "Master Zellige Artisan",
+    "ownerName": "Mohamed Borrached",
+    "location": {
+      "title": "Fes Heritage",
+      "description": "Rooted in the historic city of Fes, Morocco"
+    },
+    "team": {
+      "title": "Expert Team",
+      "description": "Skilled artisans preserving traditional craftsmanship"
+    },
+    "expertise": {
+      "title": "Professional Excellence",
+      "description": "Years of dedication perfecting Zellige Beldi"
+    },
+    "mission": {
+      "title": "Global Mission",
+      "description": "Sharing Moroccan art and elegance worldwide"
+    },
+    "stats": {
+      "experience": "Years Experience",
+      "projects": "Projects Completed",
+      "clients": "Happy Clients",
+      "passion": "Endless Passion"
+    }
   }
 }

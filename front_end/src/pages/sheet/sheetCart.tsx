@@ -250,9 +250,8 @@ function SheetCart() {
         {/* Footer */}
         {cartProducts.length > 0 && (
           <div className="border-t bg-white px-6 py-6 space-y-4">
-            {/* Total */}
             <div className="flex justify-between items-center text-lg">
-              <span className="font-medium text-gray-900">Total</span>
+              <span className="font-medium text-gray-900">{t("sheet.total")}</span>
               <span className="font-bold text-gray-900">
                 {totalPrice.toFixed(2)} {t("sheet.currency")}
               </span>

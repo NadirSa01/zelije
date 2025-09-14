@@ -1,7 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import Profile from "./admin/profile/profile";
 import NavBar from "./admin/layouts/navBar";
-import Dashboard from "./admin/dashboard/dashboard";
 import Products from "./admin/products/products";
 import Services from "./admin/services/services";
 import Clients from "./admin/clients/client";
@@ -15,6 +14,10 @@ import ClientUpdateProvider from "./contexts/common/provider";
 import Messages from "./admin/message/message";
 import MessageDetail from "./admin/message/components/detail/messageDetail";
 import OrderDetail from "./admin/dashboard/components/detailsOrder/orderDetail";
+import Order from "./admin/dashboard/components/order";
+import Dashboard from "./admin/dashboard/dashboard";
+import OrderServiceTable from "./admin/dashboard/components/serviceTable/orderTable";
+import ServiceOrderDetail from "./admin/dashboard/components/detailsServiceOrder/serviceOrderDetail";
 
 function AdminApp() {
   const Xref = useRef<HTMLDivElement>(null);
@@ -35,8 +38,11 @@ function AdminApp() {
         <ClientUpdateProvider>
         <NavBar />
         <Routes>
+          <Route path="orders" element={<Order />} />
+          <Route path="service-orders" element={<OrderServiceTable />} />
+          <Route path="service-orders/detail/:id" element={<ServiceOrderDetail />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="dashboard/order/:id" element={<OrderDetail />} />
+          <Route path="orders/order/:id" element={<OrderDetail />} />
           <Route path="clients" element={<Clients />} />
           <Route path="profile" element={<Profile />} />
           <Route path="products" element={<Products />} />

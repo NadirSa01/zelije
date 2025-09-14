@@ -9,11 +9,8 @@ import { Link } from "react-router-dom";
 function ServiceTable() {
   const { data, isLoading, isError } = useGetServicesQuery();
   const [deleteService] = useDeleteServiceMutation();
-  console.log("hello",data);
   
-  const handleDelete = async (id: string) => {
-    console.log(id);
-    
+  const handleDelete = async (id: string) => {    
     if (window.confirm("Are you sure you want to delete this service?")) {
       await deleteService(id)
         .unwrap()
@@ -28,25 +25,6 @@ function ServiceTable() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
-             <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Service Management
-              </h1>
-              <p className="text-gray-600">
-                Manage your Service ...
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-             <Link to="add">
-              <Button className="bg-gray-950 hover:bg-gray-800 flex items-center gap-2" >
-                <Plus className="w-4 h-4" />
-                Add Service
-              </Button>
-             </Link> 
-              
-            </div>
-          </div>
         <div className="container mx-auto px-4 py-8">
           {/* Header Skeleton */}
           <div className="mb-8">
@@ -90,25 +68,7 @@ function ServiceTable() {
   if (isError) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-             <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Service Management
-              </h1>
-              <p className="text-gray-600">
-                Manage your Service ...
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-             <Link to="add">
-              <Button className="bg-gray-950 hover:bg-gray-800 flex items-center gap-2" >
-                <Plus className="w-4 h-4" />
-                Add Service
-              </Button>
-             </Link> 
-              
-            </div>
-          </div>
+
         <div className="text-center bg-white p-8 rounded-xl shadow-sm border border-gray-200">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Package className="w-8 h-8 text-red-500" />

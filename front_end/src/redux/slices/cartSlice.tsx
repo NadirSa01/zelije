@@ -40,10 +40,8 @@ const CartSlice = createSlice({
       state.items=state.items.filter(
         (items: CartItem) => items.productId !== action.payload
       );
-      console.log(state.items);
      
       localStorage.setItem("cart", JSON.stringify(state.items));
-      console.log(state.items);
     },
     updateQuantitySlice: (state, action: PayloadAction<[string,number]>) => {
       const [detailId,newQt] = action.payload

@@ -29,9 +29,14 @@ const ActiveNavLink = ({ to, children, className = "" }: { to: string; children:
 
 function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSimpleOpen, setIsMobileSimpleOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleMobileSimple = () => {
+    setIsMobileSimpleOpen(!isMobileSimpleOpen);
   };
 
   return (
@@ -45,6 +50,13 @@ function NavBar() {
             <NavigationMenuItem>
               <ActiveNavLink to="/admin/dashboard">Dashboard</ActiveNavLink>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <ActiveNavLink to="/admin/service-orders">Service Orders</ActiveNavLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <ActiveNavLink to="/admin/orders">Orders</ActiveNavLink>
+            </NavigationMenuItem>
+            
             <NavigationMenuItem>
               <ActiveNavLink to="/admin/clients">Clients</ActiveNavLink>
             </NavigationMenuItem>
@@ -73,13 +85,13 @@ function NavBar() {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="currentColor"
                   className="size-6"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                   />
                 </svg>
@@ -134,7 +146,7 @@ function NavBar() {
         {/* Mobile Menu Items */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out bg-gray-100 ${
-            isMobileMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+            isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div className="px-4 py-4 space-y-1 bg-white/95 backdrop-blur-sm border-t border-gray-200 shadow-lg">
@@ -144,6 +156,20 @@ function NavBar() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Dashboard
+            </Link>
+            <Link
+              to="/admin/service-orders"
+              className="block py-3 px-4 rounded-md hover:bg-gray-100 transition-colors duration-200 font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Service Orders
+            </Link>
+            <Link
+              to="/admin/orders"
+              className="block py-3 px-4 rounded-md hover:bg-gray-100 transition-colors duration-200 font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Orders
             </Link>
             <Link
               to="/admin/clients"
@@ -165,6 +191,13 @@ function NavBar() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Services
+            </Link>
+            <Link
+              to="/admin/messages"
+              className="block py-3 px-4 rounded-md hover:bg-gray-100 transition-colors duration-200 font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Message
             </Link>
             <Link
               to="/admin/profile"

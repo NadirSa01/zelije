@@ -28,15 +28,17 @@ import { useUploadProductImageMutation } from "@/services/products/productApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useServiceFromCash } from "@/hooks/useServiceFromCash";
 import { useGetServiceByIdQuery, useUpdateServiceMutation } from "@/services/service/serviceApi";
+
 function UpdateService() {
   const { id } = useParams();
   const serviceCash = useServiceFromCash(id || "");
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const { data, isLoading } = useGetServiceByIdQuery(id);
-  const [imagePreview, setImagePreview] = useState<string>("");
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploadImage] = useUploadProductImageMutation();
   const service = serviceCash || data?.service;
-  const [updateService]=useUpdateServiceMutation();
+  const [updateService] = useUpdateServiceMutation();
+  
   const form = useForm<ServiceSchema>({
     resolver: zodResolver(serviceSchema),
     defaultValues: {
@@ -45,60 +47,89 @@ function UpdateService() {
       nameAr: "",
       highPrice: "",
       lowPrice: "",
-      picture: "",
+      picture: [],
       descriptionEn: "",
       descriptionFr: "",
       descriptionAr: "",
     },
   });
+
   useEffect(() => {
     if (service) {
+      const existingImages = Array.isArray(service?.image) ? service.image : service?.image ? [service.image] : [];
+      
       form.reset({
         nameEn: service?.name?.en,
-        nameFr: service?.name?.en,
-        nameAr: service?.name?.en,
+        nameFr: service?.name?.fr, 
+        nameAr: service?.name?.ar, 
         highPrice: service?.highPrice,
         lowPrice: service?.lowPrice,
-        picture: service?.image,
+        picture: existingImages,
         descriptionEn: service?.description?.en,
         descriptionFr: service?.description?.fr,
         descriptionAr: service?.description?.ar,
       });
+      
+      // Set existing images as previews
+      setImagePreviews(existingImages);
     }
   }, [service, form]);
+
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    onChange: (value: string) => void
+    onChange: (value: string[]) => void
   ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const newImageUrls: string[] = [];
+    const newPreviews: string[] = [];
 
     try {
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      // Process each selected file
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        // Create preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          newPreviews.push(reader.result as string);
+          if (newPreviews.length === files.length) {
+            setImagePreviews(prev => [...prev, ...newPreviews]);
+          }
+        };
+        reader.readAsDataURL(file);
 
-      // Upload to MinIO
-      const formData = new FormData();
-      formData.append("image", file);
-      const result = await uploadImage(formData).unwrap();
+        // Upload to MinIO
+        const formData = new FormData();
+        formData.append("image", file);
+        const result = await uploadImage(formData).unwrap();
+        
+        console.log("MinIO URL received:", result.imageUrl);
+        newImageUrls.push(result.imageUrl);
+      }
 
-      onChange(result.imageUrl);
-
-      toast.success("Image uploaded successfully");
+      // Update form field with all image URLs
+      const currentImages = form.getValues("picture");
+      const allImages = [...(currentImages || []), ...newImageUrls];
+      
+      onChange(allImages);
+      toast.success(`${files.length} image(s) uploaded successfully`);
+      
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("Upload failed");
-      setImagePreview("");
+      // Reset previews on error
+      setImagePreviews(prev => prev.slice(0, prev.length - newPreviews.length));
     }
   };
 
-  const removeImage = (onChange: (value: string) => void) => {
-    onChange("");
-    setImagePreview("");
+  const removeImage = (index: number, onChange: (value: string[]) => void) => {
+    const currentImages = form.getValues("picture");
+    const updatedImages = currentImages.filter((_, i) => i !== index);
+    
+    onChange(updatedImages);
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const onSubmit = (data: ServiceSchema) => {
@@ -117,18 +148,19 @@ function UpdateService() {
       lowPrice: data.lowPrice,
       image: data.picture,
     };
-
+    
     if (payload) {
-        updateService({id:service?._id,payload}).then(()=>{
-            toast.success("Service created successfully");
-          setTimeout<[]>(()=>{
-            navigate("/admin/services")
-          },1500)
-        }).catch((err)=>{
-            toast.success(err.message);
-        })
+      updateService({ id: service?._id, payload }).then(() => {
+        toast.success("Service updated successfully");
+        setTimeout(() => {
+          navigate("/admin/services");
+        }, 1500);
+      }).catch((err) => {
+        toast.error(err.message);
+      });
     }
   };
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-6 py-8">
@@ -136,7 +168,7 @@ function UpdateService() {
         <ProdcutHeaders
           headerType={"Update Service"}
           text={"Update service with image upload"}
-           backLink={"/admin/services"}
+          backLink={"/admin/services"}
           name={"Service   "}
         />
       </div>
@@ -227,19 +259,20 @@ function UpdateService() {
                   )}
                 />
 
-                {/* Service Image */}
+                {/* Service Images - Multiple Upload */}
                 <FormField
                   control={form.control}
                   name="picture"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Service Image</FormLabel>
+                      <FormLabel>Service Images</FormLabel>
                       <FormControl>
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                           <div className="flex items-center gap-2">
                             <Input
                               type="file"
                               accept="image/*"
+                              multiple // Enable multiple file selection
                               onChange={(e) =>
                                 handleImageChange(e, field.onChange)
                               }
@@ -257,28 +290,31 @@ function UpdateService() {
                               }
                             >
                               <Upload className="w-4 h-4" />
-                              Choose Image
+                              Choose Images
                             </Button>
-                            {field.value && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                className="text-red-600 hover:text-red-700"
-                                onClick={() => removeImage(field.onChange)}
-                              >
-                                <X className="w-4 h-4" />
-                              </Button>
-                            )}
                           </div>
 
-                          {(field.value || imagePreview) && (
-                            <div className="mt-2">
-                              <img
-                                src={field.value || imagePreview}
-                                alt="Service preview"
-                                className="w-20 h-20 object-cover rounded-md border border-gray-300"
-                              />
+                          {/* Display all uploaded images */}
+                          {imagePreviews.length > 0 && (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                              {imagePreviews.map((preview, index) => (
+                                <div key={index} className="relative">
+                                  <img
+                                    src={preview}
+                                    alt={`Service preview ${index + 1}`}
+                                    className="w-20 h-20 object-cover rounded-md border border-gray-300"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="absolute -top-2 -right-2 w-6 h-6 p-0 text-red-600 hover:text-red-700 bg-white border border-gray-300 rounded-full"
+                                    onClick={() => removeImage(index, field.onChange)}
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              ))}
                             </div>
                           )}
                         </div>
@@ -357,4 +393,5 @@ function UpdateService() {
     </div>
   );
 }
+
 export default UpdateService;

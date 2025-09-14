@@ -1,9 +1,10 @@
-function Order(){
-    return (
-        <div>
-            <h2>Order Details</h2>
-            {/* Order details will go here */}
-        </div>
-    );
+import OrderTable from "./table/orderTable";
+
+function Order() {
+  return (
+    <div>
+      <OrderTable />
+    </div>
+  );
 }
 export default Order;

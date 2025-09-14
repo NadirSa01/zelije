@@ -27,7 +27,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Clock,
   Send,
   Facebook,
   Instagram,
@@ -84,10 +83,10 @@ const ContactPage: React.FC = () => {
       icon: <MapPin className="w-6 h-6" />,
       translationKey: "address",
     },
-    {
-      icon: <Clock className="w-6 h-6" />,
-      translationKey: "hours",
-    },
+    // {
+    //   icon: <Clock className="w-6 h-6" />,
+    //   translationKey: "hours",
+    // },
   ];
 
   // Social media links
@@ -95,7 +94,7 @@ const ContactPage: React.FC = () => {
     {
       name: "Facebook",
       icon: <Facebook className="w-5 h-5" />,
-      url: "#",
+      url: "https://www.facebook.com/share/14FQBpFwjmT/",
       color: "hover:text-blue-600",
     },
     {
@@ -119,10 +118,6 @@ const ContactPage: React.FC = () => {
   ];
 
   const onSubmit = async (data: ContactSchema) => {
-    console.log("hellllo");
-    
-    console.log(data);
-
     if (data) {
       createMessage(data)
         .unwrap()
@@ -135,7 +130,8 @@ const ContactPage: React.FC = () => {
         });
     }
   };
-
+  const message = encodeURIComponent(t("contact.whatsapp.message"));
+  const phone = "212609006229";
   return (
     <div className="min-h-screen">
       <Toaster richColors position="top-right" />
@@ -196,7 +192,6 @@ const ContactPage: React.FC = () => {
                         )}
                       />
 
-                      
                       <FormField
                         control={form.control}
                         name="address"
@@ -269,7 +264,7 @@ const ContactPage: React.FC = () => {
                                   placeholder={t(
                                     "contact.form.placeholders.phone"
                                   )}
-                                  className="pl-11 py-3"
+                                  className="pl-11  py-3"
                                   {...field}
                                 />
                               </div>
@@ -400,14 +395,16 @@ const ContactPage: React.FC = () => {
                                   returnObjects: true,
                                 }) as string[];
                                 break;
-                              case "hours":
-                                items = t("contact.contactInfo.hours.times", {
-                                  returnObjects: true,
-                                }) as string[];
-                                break;
+                              // case "hours":
+                              //   items = t("contact.contactInfo.hours.times", {
+                              //     returnObjects: true,
+                              //   }) as string[];
+                              //   break;
                             }
                             return items.map((item: string) => (
-                              <p key={item}>{item}</p>
+                              <p key={item} dir="ltr">
+                                {item}
+                              </p>
                             ));
                           })()}
                         </div>
@@ -451,10 +448,16 @@ const ContactPage: React.FC = () => {
                 <p className="text-green-700 mb-4">
                   {t("contact.whatsapp.description")}
                 </p>
-                <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+
+                <a
+                  href={`https://api.whatsapp.com/send?phone=${phone}&text=${message}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg"
+                >
                   <MessageCircle className="w-4 h-4 mr-2" />
                   {t("contact.whatsapp.button")}
-                </Button>
+                </a>
               </div>
             </div>
           </div>

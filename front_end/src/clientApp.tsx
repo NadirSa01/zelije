@@ -10,6 +10,8 @@ import Products from "./pages/products/products";
 import SheetCart from "./pages/sheet/sheetCart";
 import OrderDetails from "./pages/confirmeOrder/detailsOrders/detailsOrder";
 import CheckoutForm from "./pages/confirmeOrder/clientInfo/clientInfo";
+import OurServices from "./pages/services/compoenet/serviceCard";
+import CheckoutFormService from "./pages/confirmeOrder/clientFrom/clientInfo";
 function ClientApp() {
   const Xref = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -31,6 +33,8 @@ function ClientApp() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/collections" element={<Products/>} />
+          <Route path="/services" element={<OurServices/>} />
+          <Route path="service/confirm" element={<CheckoutFormService />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/cart" element={<CardDemo/>} />
           <Route path="/order" element={<OrderDetails/>} />

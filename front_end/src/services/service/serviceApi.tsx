@@ -49,8 +49,15 @@ export const serviceApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags:["Service"]
-
   }),
+  createServiceOrder:builder.mutation({
+    query : (order)=>({
+      url :"/service-order",
+      method: "POST",
+      body:order
+    }),
+    invalidatesTags:["Service"]
+  })
 })
 })
 export const { 
@@ -58,6 +65,7 @@ export const {
   useDeleteServiceMutation,
   useCreateServiceMutation,
   useGetServiceByIdQuery,
-  useUpdateServiceMutation
+  useUpdateServiceMutation,
+  useCreateServiceOrderMutation
 } = serviceApi;
 

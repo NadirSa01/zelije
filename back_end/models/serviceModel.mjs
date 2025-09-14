@@ -41,7 +41,7 @@ const ServiceModel = new mongoose.Schema(
     },
     highPrice: { type: Number, required: true },
     lowPrice: { type: Number, required: true },
-    image: { type: String, required: true },
+    image: { type: [String], required: true },
   },
   { timestamps: true }
 );

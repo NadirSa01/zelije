@@ -9,6 +9,7 @@ import ProductRouter from './routes/productRoutes.mjs';
 import OrderRouter from './routes/orderRoutes.mjs';
 import ServiceRouter from './routes/serviceRoutes.mjs';
 import ServiceOrderRouter from './routes/serviceOrderRoutes.mjs';
+import chartRouter from './routes/chartRoutes.mjs';
 dotenv.config();
 
 const app = express();
@@ -48,4 +49,5 @@ app.use('/api', ProductRouter);
 app.use('/api', OrderRouter);
 app.use('/api', ServiceRouter);
 app.use('/api', ServiceOrderRouter);
+app.use('/api', chartRouter);
 StartServer();
