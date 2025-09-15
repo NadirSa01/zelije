@@ -5,9 +5,7 @@ import { TrendingUp, TrendingDown, type LucideIcon } from 'lucide-react';
 interface MetricCardProps {
   title: string;
   value: string;
-  change: string;
   changeType: 'positive' | 'negative' | 'neutral';
-  trend: string;
   subtitle: string;
   description?: string;
   icon: LucideIcon;
@@ -16,9 +14,7 @@ interface MetricCardProps {
 const MetricCard: React.FC<MetricCardProps> = ({ 
   title, 
   value, 
-  change, 
   changeType, 
-  trend, 
   subtitle, 
   description, 
   icon: Icon 
@@ -44,7 +40,6 @@ const MetricCard: React.FC<MetricCardProps> = ({
             <span className={`text-sm font-medium ${
               isPositive ? 'text-green-600' : isNegative ? 'text-red-600' : 'text-gray-600'
             }`}>
-              {change}
             </span>
           </div>
         </div>
@@ -54,10 +49,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
         </div>
         
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-gray-700">{trend}</span>
-            <TrendingUp className="w-3 h-3 text-gray-400" />
-          </div>
+        
           <div className="text-sm text-gray-500">{subtitle}</div>
           {description && <div className="text-sm text-gray-500">{description}</div>}
         </div>

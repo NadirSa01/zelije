@@ -141,7 +141,6 @@ export const getColumns = (
       const handleCopyId = () => {
         navigator.clipboard.writeText(service._id);
         // You can add a toast notification here
-        console.log("Client ID copied to clipboard");
       };
 
       const handleDelete = () => {

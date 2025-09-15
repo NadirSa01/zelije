@@ -102,7 +102,7 @@ const ProductCard = ({ product }: { product: any }) => {
             {product.name?.[currentLanguage] || "Product"}
           </h3>
           <p className="text-sm text-gray-500 font-medium">
-            Size: {product.size}
+            {t("contact.form.size")} : {product.size}
           </p>
         </div>
 

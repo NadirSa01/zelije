@@ -52,7 +52,6 @@ import {
   X,
   Database
 } from "lucide-react";
-import { useClientUpdate } from "@/contexts/common/useClientUpdate";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -74,7 +73,6 @@ export function DataTable<TData, TValue>({
   onExport,
   loading = false,
 }: DataTableProps<TData, TValue>) {
-  const  updateClientContext=useClientUpdate() 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});

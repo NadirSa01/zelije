@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import {
   ArrowLeft,
   ChevronDown,
@@ -24,12 +24,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clientSchema, type ClientSchema } from "../clientInfo/clientSchema";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store/store";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateServiceOrderMutation } from "@/services/service/serviceApi";
 import { toast, Toaster } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { removeService } from "@/redux/slices/serviceSlice";
 
 const CheckoutFormService = () => {
   const [showOrderSummary, setShowOrderSummary] = useState(false);
@@ -39,6 +40,7 @@ const CheckoutFormService = () => {
   const service = useSelector((state: RootState) => state.service.service);
   const [createServiceOrder] = useCreateServiceOrderMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const form = useForm<ClientSchema>({
     resolver: zodResolver(clientSchema),
     defaultValues: {
@@ -78,12 +80,14 @@ const CheckoutFormService = () => {
         .then(() => {
           setTimeout(() => {
             form.reset();
+            dispatch(removeService());
+
             navigate("/services");
           }, 1800);
-          toast.success("Your order created with success");
+          toast.success(t("productSuccess"));
         })
-        .catch((err) => {
-          toast.error(err);
+        .catch(() => {
+          toast.error(t("productFailed"));
         });
     }
   };

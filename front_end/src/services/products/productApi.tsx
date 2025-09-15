@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { ApiRes } from "@/admin/products/components/table/getApiRes";
 export const productApi = createApi({
   reducerPath: "productApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" ,credentials: 'include',  }),
   tagTypes: ["Product"],
   endpoints: (builder) => ({
     getProducts: builder.query<ApiRes, void>({

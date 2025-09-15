@@ -5,7 +5,8 @@ interface Language {
 }
 
 export const LANGUAGES: Language[] = [
+  { code: 'ar', label: 'العربية', flag: '🇲🇦' },
   { code: 'en', label: 'English', flag: '🇬🇧' },
   { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'ar', label: 'العربية', flag: '🇲🇦' }
+  
 ];

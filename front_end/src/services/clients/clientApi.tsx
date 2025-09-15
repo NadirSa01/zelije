@@ -3,7 +3,7 @@ import type { clientPayload } from "./clientPayload";
 
 export const clientApi = createApi({
   reducerPath: "clientApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" ,credentials: 'include',  }),
   tagTypes: ["Client"],
   endpoints: (builder) => ({
     getClients: builder.query<clientPayload, void>({

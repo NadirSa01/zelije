@@ -10,7 +10,6 @@ import type { IProduct } from "@/types/product";
 
 function ProductsTable() {
   const { data, isLoading, error } = useGetProductsQuery();
-  console.log(data);
    const [deleteProduct] = useDeleteProductMutation();
 
   const handleDelete = async(id: string) => {
@@ -19,7 +18,6 @@ function ProductsTable() {
       await deleteProduct(id)
         .unwrap()
         .then((res) =>{
-          console.log("res : ",res.message);
           
             toast.success(res.message);
         })

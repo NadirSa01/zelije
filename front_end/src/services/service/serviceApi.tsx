@@ -4,7 +4,7 @@ import type { ServicePayload } from "./servicePayload";
 
 export const serviceApi = createApi({
   reducerPath: "serviceApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" ,credentials: 'include',  }),
   tagTypes: ["Service"],
   endpoints: (builder) => ({
     getServices: builder.query<ServicePayload, void>({

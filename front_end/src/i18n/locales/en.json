@@ -81,6 +81,14 @@
       "required": "*",
       "city": " City",
       "description": "Description",
+      "hideOrder": "Hide Order",
+      "showOrder": "Show Order",
+      "color": "Color",
+      "size": "Size",
+      "quantity": "Quantity",
+      "free": "Free",
+      "Checkout": "Checkout",
+      "BackToCollection": "Back to Collection",
       "placeholders": {
         "name": "Your name",
         "email": "your@email.com",
@@ -100,7 +108,8 @@
       },
       "submitButton": {
         "idle": "Send message",
-        "loading": "Sending..."
+        "loading": "Sending...",
+        "placeOrder": "Place Order"
       }
     },
     "contactInfo": {
@@ -142,9 +151,12 @@
       "title": "Quick Contact",
       "description": "Need an immediate response? Contact us on WhatsApp!",
       "button": "WhatsApp",
-      "message":"Hello, I’m interested in your services. Can you give me more details?"
+      "message": "Hello, I’m interested in your services. Can you give me more details?"
     }
   },
+  "productSuccess":"Order created with success",
+  "productFailed":"No product selected",
+  
   "footer": {
     "about": "About",
     "contact": "Contact",
@@ -187,7 +199,7 @@
     "total": "Total",
     "advantage1": "Cash on Delivery available",
     "advantage2": "Reliable after-sales service",
-    "OrderSummary":"Order Summary"
+    "OrderSummary": "Order Summary"
   },
   "service": {
     "title1": "Crafting Excellence in ",
@@ -205,7 +217,8 @@
     "checkOutTitle": "Book Service",
     "backButton": "Back to Services",
     "panierName": "Service Details",
-    "sendButton": "Send"
+    "sendButton": "Send",
+    "getQuote": "Get a Quote"
   },
   "ourStory": {
     "title": "Our Story",

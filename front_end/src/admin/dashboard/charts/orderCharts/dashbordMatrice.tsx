@@ -1,5 +1,5 @@
 import React from 'react';
-import {  BarChart3, DollarSign,  } from 'lucide-react';
+import { BarChart3, DollarSign } from 'lucide-react';
 import { useGetMetricsQuery } from '@/services/charts/chartsApi';
 import MetricCard from './cardsChart';
 import { AlertCircle } from 'lucide-react';
@@ -17,7 +17,6 @@ const DashboardMetrics: React.FC<DashboardMetricsProps> = ({
     startDate: startDate.toISOString(),
     endDate: endDate.toISOString(),
   });
-  console.log(data);
   
   // Loading state
   if (isLoading) {
@@ -68,45 +67,54 @@ const DashboardMetrics: React.FC<DashboardMetricsProps> = ({
     );
   }
 
-  const total = data.productIncome+data.serviceIncome
+  const total = data.productIncome + data.serviceIncome;
+  
   const metricsConfig = [
     {
       key: 'totalRevenue',
       title: 'Total Revenue',
       icon: DollarSign,
-      data: total.toString()
-
+      value: `${total.toLocaleString()}`,
+      changeType: 'positive' as const,
+      subtitle: 'Combined product and service revenue'
     },
     {
-      key: 'totalOrders',
-      title: 'Total Orders',
+      key: 'productIncome',
+      title: 'Product Income',
       icon: BarChart3,
-      data: data.productIncome.toString()
+      value: `${data.productIncome.toLocaleString()}`,
+      changeType: 'positive' as const,
+      subtitle: 'Revenue from product sales'
     },
     {
-      key: 'totalService',
-      title: 'Total Service',
+      key: 'serviceIncome',
+      title: 'Service Income',
       icon: BarChart3,
-      data: data.productIncome.toString()
+      value: `${data.serviceIncome.toLocaleString()}`,
+      changeType: 'positive' as const,
+      subtitle: 'Revenue from services'
     },
-
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-      {metricsConfig.map((metric) => (
-        <MetricCard
-          key={metric.key}
-          title={metric.title}
-          value={metric.data.value}
-        //   change={metric.data.change}
-        //   changeType={metric.data.changeType}
-        //   trend={metric.data.trend}
-        //   subtitle={metric.data.subtitle}
-          icon={metric.icon}
-        />
-      ))}
-    </div>
+   <div className="mb-8 space-y-4">
+  {/* Button section */}
+
+  
+  {/* Metrics grid */}
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3">
+    {metricsConfig.map((metric) => (
+      <MetricCard
+        key={metric.key}
+        title={metric.title}
+        value={metric.value}
+        changeType={metric.changeType}
+        subtitle={metric.subtitle}
+        icon={metric.icon}
+      />
+    ))}
+  </div>
+</div>
   );
 };
 

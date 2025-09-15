@@ -158,7 +158,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
       message: "Product updated successfully",
     });
   } catch (error) {
-    console.log(error);
     
     return res.status(500).json({ message: "Error updating product", error });
   }

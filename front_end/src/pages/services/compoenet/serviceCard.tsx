@@ -187,8 +187,8 @@ const ServiceCard = ({ service }) => {
             onClick={handleContactClick}
             className="w-full bg-black hover:bg-gray-800 text-white font-medium py-3 transition-all duration-300 group rounded-md inline-flex items-center justify-center"
           >
-            Get a Quote
-            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            {t("service.getQuote")}
+            <ArrowRight  className=" w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </Link>
       </div>

@@ -15,7 +15,6 @@ function ServiceTable() {
       await deleteService(id)
         .unwrap()
         .then((res) => {
-          console.log("res : ", res.message);
           toast.success(res.message);
         })
         .catch((err) => console.error("Error deleting service:", err));

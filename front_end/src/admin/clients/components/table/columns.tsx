@@ -10,8 +10,7 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Eye, Trash2, Copy, Phone, MapPin, User, ArrowUpDown,Settings2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { MoreHorizontal, Trash2, Copy, Phone, MapPin, User, ArrowUpDown,Settings2 } from "lucide-react";
 import type { contextClient } from "@/contexts/common/updateUSerContext";
 
 export const getColumns = (
@@ -130,7 +129,6 @@ export const getColumns = (
       const handleCopyId = () => {
         navigator.clipboard.writeText(client._id);
         // You can add a toast notification here
-        console.log("Client ID copied to clipboard");
       };
 
       const handleDelete = () => {
@@ -165,12 +163,7 @@ export const getColumns = (
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="my-1 border-gray-100" />
               
-              <Link to={`detail/${client._id}`}>
-                <DropdownMenuItem className="px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 cursor-pointer rounded-md flex items-center gap-2 transition-colors">
-                  <Eye className="h-4 w-4" />
-                  View Details
-                </DropdownMenuItem>
-              </Link>
+              
               
               <DropdownMenuItem 
                 onClick={handleCopyId}

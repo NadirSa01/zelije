@@ -1,6 +1,7 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import { LANGUAGES } from "@/constants/languages";
 import { useState, useRef, useEffect } from "react";
+import {  FR, MA, US } from 'country-flag-icons/react/3x2'
 
 export function LanguageSelector() {
   const { currentLanguage, changeLanguage } = useLanguage();
@@ -25,7 +26,7 @@ export function LanguageSelector() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 text-sm font-medium bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all"
       >
-        <span className="text-base">{currentLang?.flag}</span>
+        <span className="text-base">{currentLang?.code== "en" ? <US title="United States" className="w-4 h-3" /> :currentLang?.code== "fr" ? <FR title="France" className="w-4 h-3" /> :currentLang?.code== "ar" ? <MA title="Arabic" className="w-4 h-3" /> :null }</span>
         <span>{currentLang?.label}</span>
         <svg
           className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
@@ -55,7 +56,7 @@ export function LanguageSelector() {
                 currentLanguage === lang.code ? "bg-gray-50 font-medium" : ""
               }`}
             >
-              <span className="text-base">{lang.flag}</span>
+              <span className="text-base"> {lang.code== "en" ? <US title="United States" className="w-4 h-3" /> :lang.code== "fr" ? <FR title="France" className="w-4 h-3" /> :lang.code== "ar" ? <MA title="Arabic" className="w-4 h-3" /> :null }</span>
               <span>{lang.label}</span>
             </button>
           ))}

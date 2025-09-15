@@ -108,7 +108,6 @@ const HomePageSlider: React.FC = () => {
                     className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-full transform hover:scale-105 transition-transform duration-300 shadow-lg"
                     onClick={() => {
                       // Add your navigation logic here
-                      console.log(`Clicked: ${t(`slider.${slide.translationKey}.buttonText`)}`);
                     }}
                   >
                     {t(`slider.${slide.translationKey}.buttonText`)}

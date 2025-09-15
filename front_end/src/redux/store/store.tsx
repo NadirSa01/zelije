@@ -9,6 +9,7 @@ import { messageApi } from "@/services/messages/messageApi";
 import { orderApi } from "@/services/orders/orderApi";
 import { serviceOrderApi } from "@/services/serviceOrders/serviceOrder";
 import { chartApi } from "@/services/charts/chartsApi";
+import { authApi } from "@/services/auth/authApi";
 const store = configureStore({
   reducer: {
     admin: adminReducer,
@@ -21,6 +22,7 @@ const store = configureStore({
     [orderApi.reducerPath]:orderApi.reducer,
     [serviceOrderApi.reducerPath]:serviceOrderApi.reducer,
     [chartApi.reducerPath]:chartApi.reducer,
+    [authApi.reducerPath]:authApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -31,6 +33,7 @@ const store = configureStore({
       orderApi.middleware,
       serviceOrderApi.middleware,
       chartApi.middleware,
+      authApi.middleware,
     ),
 });
 export type RootState = ReturnType<typeof store.getState>;

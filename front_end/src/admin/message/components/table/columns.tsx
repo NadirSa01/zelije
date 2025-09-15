@@ -29,7 +29,8 @@ export const getColumns = (
   onDelete: (id: string) => void
 ): ColumnDef<IMessage>[] => [
 {
-  accessorKey: "client",  // store whole client object in this column
+  accessorFn: (row) => row.client.fullName, // extract string for filtering
+  id: "fullName", // unique column ID
   header: () => (
     <div className="flex items-center gap-2 font-semibold text-gray-700">
       <User className="h-4 w-4" />
@@ -37,7 +38,7 @@ export const getColumns = (
     </div>
   ),
   cell: ({ row }) => {
-    const client = row.original.client; // access full client object
+    const client = row.original.client;
     return (
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -51,27 +52,25 @@ export const getColumns = (
   },
 },
 {
-    accessorKey: "client",
-    header: () => {
-      return (
-        <div className="flex items-center gap-2 font-semibold text-gray-700">
-          <Phone className="h-4 w-4" />
-          Telephone
-        </div>
-      );
-    },
-    cell: ({ row }) => {
-      const client = row.original.client; // access full client object
-
-      return (
-        <div className="flex items-center gap-2">
-          <span className="text-gray-600 font-mono">
-            {client.telephone}
-          </span>
-        </div>
-      );
-    },
+  accessorFn: (row) => row.client.telephone, // extract string for filtering
+  id: "telephone", // unique column ID
+  header: () => (
+    <div className="flex items-center gap-2 font-semibold text-gray-700">
+      <Phone className="h-4 w-4" />
+      Telephone
+    </div>
+  ),
+  cell: ({ row }) => {
+    const client = row.original.client;
+    return (
+      <div className="flex items-center gap-2">
+        <span className="text-gray-600 font-mono">
+          {client.telephone}
+        </span>
+      </div>
+    );
   },
+},
   {
     accessorKey: "subject",
     header: () => {
@@ -135,29 +134,29 @@ export const getColumns = (
     return <div className="text-gray-600">{preview}</div>;
   },
 },
-  {
-    accessorKey: "address",
-    header: () => (
+ {
+  accessorFn: (row) => row.client.city, // extract string for filtering
+  id: "city", // unique column ID
+  header: () => (
     <div className="flex items-center gap-2 font-semibold text-gray-700">
       <MapPin className="h-4 w-4" />
       Address
     </div>
   ),
-    cell: ({ row }) => {
-      const client = row.original.client;
-      return (
-        <div className="max-w-[200px]">
-          <span
-            className="text-gray-600 text-sm truncate block"
-            title={client.city}
-          >
-            
-            {client.city}
-          </span>
-        </div>
-      );
-    },
+  cell: ({ row }) => {
+    const client = row.original.client;
+    return (
+      <div className="max-w-[200px]">
+        <span
+          className="text-gray-600 text-sm truncate block"
+          title={client.city}
+        >
+          {client.city}
+        </span>
+      </div>
+    );
   },
+},
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
@@ -242,7 +241,7 @@ export const getColumns = (
                 className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer rounded-md flex items-center gap-2 transition-colors"
               >
                 <Trash2 className="h-4 w-4" />
-                Delete Client
+                Delete Message
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

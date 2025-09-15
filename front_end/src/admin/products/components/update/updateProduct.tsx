@@ -132,7 +132,6 @@ function UpdatedProduct() {
         picture: detail.picture,
       })),
     };
-        console.log("Payload to be sent:", payload);
 
     if (window.confirm("Are you sure you want to update this product?")) {
       updateProduct({ id: product._id, payload })

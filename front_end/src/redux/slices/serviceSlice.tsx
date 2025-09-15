@@ -20,5 +20,5 @@ const ServiceCart = createSlice({
     },
   },
 });
-export const { addService } = ServiceCart.actions;
+export const { addService, removeService } = ServiceCart.actions;
 export default ServiceCart.reducer;

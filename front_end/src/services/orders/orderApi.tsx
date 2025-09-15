@@ -3,7 +3,7 @@ import type { orderPayload, orders, payloadOrderGET } from "./orderPayload";
 
 export const orderApi = createApi({
   reducerPath: "orderApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" ,credentials: 'include',  }),
   tagTypes: ["Order"],
   endpoints: (builder) => ({
     getOrder: builder.query<payloadOrderGET, void>({

@@ -31,7 +31,8 @@ import { useAddOrderMutation } from "@/services/orders/orderApi";
 import type { OrderPyl } from "@/services/orders/orderPayload";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { t } from "i18next";
 
 const CheckoutForm = () => {
   const [addOrder] = useAddOrderMutation();
@@ -41,7 +42,7 @@ const CheckoutForm = () => {
   const { i18n } = useTranslation();
   const lang = i18n.language;
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     const loadCartFromStorage = () => {
       try {
@@ -86,29 +87,29 @@ const CheckoutForm = () => {
         quantity: element.quantity,
       });
     });
-    if (cartProducts.length >= 0 ) {
+    if (cartProducts.length > 0) {
       addOrder({ data, orderPayload })
-      .unwrap()
-      .then(() => {
-        toast.success("Order created with success")
-        localStorage.setItem("cart","[]")
-        setCartProducts([]);
-        dispatch(clearCart())
-        setTimeout(()=>{
-          navigate("/collections")
-        },1500)
-      })
-      .catch((err) => {
-        toast.error(err)
-      });
-    }else{
-      toast.error("No product selected")
+        .unwrap()
+        .then(() => {
+          dispatch(clearCart());
+          localStorage.setItem("cart", "[]");
+          toast.success(t("productSuccess"));
+          setCartProducts([]);
+          setTimeout(() => {
+            navigate("/collections");
+          }, 1500);
+        })
+        .catch((err) => {
+          toast.error(err);
+        });
+    } else {
+      toast.error(t("productFailed"));
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-        <Toaster richColors position="top-right" />
+      <Toaster richColors position="top-right" />
       {/* Mobile Order Summary Toggle */}
       <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3">
         <button
@@ -118,12 +119,14 @@ const CheckoutForm = () => {
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-gray-600" />
             <span className="font-medium text-gray-900">
-              {showOrderSummary ? "Hide Order" : "Show Order"}
+              {showOrderSummary
+                ? t("contact.form.hideOrder")
+                : t("contact.form.showOrder")}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-bold text-gray-900">
-              {total.toFixed(2)} DH
+              {total.toFixed(2)} {t("sheet.currency")}
             </span>
             {showOrderSummary ? (
               <ChevronUp className="w-5 h-5 text-gray-600" />
@@ -150,33 +153,31 @@ const CheckoutForm = () => {
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-gray-900 text-sm line-clamp-1">
-                    {product.name.en}
+                  <h4 className="font-medium text-gray-900 text-sm line-clamp-1 pb-1">
+                    {product.name[lang]}
                   </h4>
-                  <p className="text-xs text-gray-500">
-                    Size: {product.size} • {product.colorName[lang]}
+                  <p className="text-xs text-gray-500 ">
+                    {t("contact.form.size")}: {product.size}
                   </p>
                   <p className="text-xs text-gray-500">
-                    Qty: {product.quantity}
+                    {t("contact.form.color")}: {product.colorName[lang]}
+                  </p>
+                  <p className="text-xs text-gray-500 ">
+                    {t("contact.form.quantity")}: {product.quantity}
                   </p>
                 </div>
                 <div className="text-sm font-medium text-gray-900">
-                  {(product.price * product.quantity).toFixed(2)} DH
+                  {(product.price * product.quantity).toFixed(2)}{" "}
+                  {t("sheet.currency")}
                 </div>
               </div>
             ))}
-            <div className="border-t border-gray-200 pt-3 mt-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="text-gray-900">{subtotal.toFixed(2)} DH</span>
-              </div>
-              <div className="flex justify-between text-green-600 text-sm mt-1">
-                <span>Shipping</span>
-                <span className="font-medium">Free</span>
-              </div>
+            <div className=" pt-3 mt-3">
               <div className="flex justify-between font-bold mt-2 pt-2 border-t border-gray-200">
-                <span>Total</span>
-                <span>{total.toFixed(2)} DH</span>
+                <span>{t("sheet.Total")}</span>
+                <span>
+                  {total.toFixed(2)} {t("sheet.currency")}
+                </span>
               </div>
             </div>
           </div>
@@ -186,11 +187,16 @@ const CheckoutForm = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <button className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors duration-200">
+          <Link
+            to="/collections"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors duration-200"
+          >
             <ArrowLeft className="w-5 h-5" />
-            Back to Cart
-          </button>
-          <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
+            {t("contact.form.BackToCollection")}
+          </Link>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {t("contact.form.Checkout")}
+          </h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -200,7 +206,7 @@ const CheckoutForm = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="w-5 h-5" />
-                  Customer Information
+                  {t("contact.form.title2")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -215,12 +221,14 @@ const CheckoutForm = () => {
                       name="fullName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Full Name *</FormLabel>
+                          <FormLabel>{t("contact.form.fullName")}</FormLabel>
                           <FormControl>
                             <div className="relative">
                               <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                               <Input
-                                placeholder="Your Name"
+                                placeholder={t(
+                                  "contact.form.placeholders.name"
+                                )}
                                 className="pl-11"
                                 {...field}
                               />
@@ -237,7 +245,7 @@ const CheckoutForm = () => {
                       name="telephone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Telephone *</FormLabel>
+                          <FormLabel>{t("contact.form.phone")}</FormLabel>
                           <FormControl>
                             <div className="relative">
                               <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -260,12 +268,14 @@ const CheckoutForm = () => {
                       name="city"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>City *</FormLabel>
+                          <FormLabel>{t("contact.form.city")}</FormLabel>
                           <FormControl>
                             <div className="relative">
                               <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                               <Input
-                                placeholder="Enter your city"
+                                placeholder={t(
+                                  "contact.form.placeholders.city"
+                                )}
                                 className="pl-11"
                                 {...field}
                               />
@@ -282,12 +292,14 @@ const CheckoutForm = () => {
                       name="address"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Address *</FormLabel>
+                          <FormLabel>{t("contact.form.address")}</FormLabel>
                           <FormControl>
                             <div className="relative">
                               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                               <Input
-                                placeholder="Street address"
+                                placeholder={t(
+                                  "contact.form.placeholders.address"
+                                )}
                                 className="pl-11"
                                 {...field}
                               />
@@ -302,7 +314,8 @@ const CheckoutForm = () => {
                       type="submit"
                       className="w-full bg-gray-950 hover:bg-gray-800 text-white py-6 text-lg font-semibold"
                     >
-                      Place Order • {total.toFixed(2)} DH
+                      {t("contact.form.submitButton.placeOrder")}{" "}
+                      {total.toFixed(2)} {t("sheet.currency")}
                     </Button>
                   </form>
                 </Form>
@@ -316,7 +329,7 @@ const CheckoutForm = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <ShoppingBag className="w-5 h-5" />
-                  Order Summary ({totalItems} items)
+                  {t("sheet.OrderSummary")} ({totalItems} {t("sheet.items")})
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -337,21 +350,27 @@ const CheckoutForm = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-900 text-sm mb-1">
-                          {product.name.en}
+                          {product.name[lang]}
                         </h4>
                         <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                          <span>Size: {product.size}</span>
+                          <span>
+                            {" "}
+                            {t("contact.form.size")} : {product.size}
+                          </span>
                           <div className="flex items-center gap-1">
                             <div
                               className="w-3 h-3 rounded-full border border-gray-300"
                               style={{ backgroundColor: product.colorCode }}
                             />
-                            <span>{product.colorName[lang]}</span>
+                            <span>
+                              {t("contact.form.color")} :{" "}
+                              {product.colorName[lang]}
+                            </span>
                           </div>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-xs text-gray-500">
-                            Qty: {product.quantity}
+                            {t("contact.form.quantity")} : {product.quantity}
                           </span>
                           <span className="font-bold text-gray-900 text-sm">
                             {(product.price * product.quantity).toFixed(2)} DH
@@ -362,18 +381,13 @@ const CheckoutForm = () => {
                   ))}
                 </div>
 
-                <div className="border-t border-gray-200 pt-4 space-y-3">
-                  <div className="flex justify-between text-gray-600">
-                    <span>Subtotal</span>
-                    <span>{subtotal.toFixed(2)} DH</span>
-                  </div>
-
+                <div className="pt-4 space-y-3">
                   <div className="flex justify-between items-center pt-3 border-t border-gray-200">
                     <span className="text-xl font-bold text-gray-900">
-                      Total
+                      {t("sheet.Total")}
                     </span>
                     <span className="text-2xl font-bold text-gray-900">
-                      {total.toFixed(2)} DH
+                      {total.toFixed(2)} {t("sheet.currency")}
                     </span>
                   </div>
                 </div>

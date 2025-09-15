@@ -3,7 +3,7 @@ import type { MetricsApiResponse } from "./chartPayload";
 
 export const chartApi = createApi({
   reducerPath: "chartApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" ,credentials: 'include',  }),
   tagTypes: ["Chart"],
   endpoints: (builder) => ({
     getChart: builder.query({

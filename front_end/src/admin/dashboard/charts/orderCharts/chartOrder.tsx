@@ -9,14 +9,16 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import {
-  Calendar,
-  BarChart3,
-  Loader2,
-  AlertCircle,
-} from "lucide-react";
+import { Calendar, BarChart3, Loader2, AlertCircle, CalendarIcon, RefreshCw } from "lucide-react";
 import { useGetChartQuery } from "@/services/charts/chartsApi";
 import DashboardMetrics from "./dashbordMatrice"; // Import the DashboardMetrics component
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 // TypeScript interfaces
 interface ChartDataItem {
@@ -68,22 +70,38 @@ const OrdersServicesChart: React.FC = () => {
     startDate: startDate.toISOString(),
     endDate: endDate.toISOString(),
   });
-  
- const handlePeriodChange = (value: string) => {
+
+  const handlePeriodChange = (value: string) => {
     setPeriod(value);
 
     const now = new Date();
     let start: Date;
-    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+    const end = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23,
+      59,
+      59,
+      999
+    );
 
     switch (value) {
       case "Today":
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+        start = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          0,
+          0,
+          0,
+          0
+        );
         break;
 
       case "This Week": {
         const firstDayOfWeek = new Date(now);
-        firstDayOfWeek.setDate(now.getDate() - now.getDay());
+        firstDayOfWeek.setDate(now.getDate() - 7);
         firstDayOfWeek.setHours(0, 0, 0, 0);
         start = firstDayOfWeek;
         break;
@@ -94,7 +112,15 @@ const OrdersServicesChart: React.FC = () => {
         break;
 
       default:
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+        start = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          0,
+          0,
+          0,
+          0
+        );
     }
 
     setStartDate(start);
@@ -204,70 +230,113 @@ const OrdersServicesChart: React.FC = () => {
   return (
     <div className="w-full max-w-6xl mx-auto p-6 bg-white">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">
-              Analytics Dashboard
-            </h2>
-            <p className="text-gray-600">Orders and Services Overview</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-blue-600" />
-            <span className="text-sm font-medium text-gray-700">Live Data</span>
-          </div>
+      <div className="mb-8 space-y-6">
+         {/* Welcome Section */}
+      <div className="p-4 border-b border-gray-200 mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Welcome, Mohammed
+        </h1>
+        <p className="text-gray-600">
+          Here's your dashboard overview for today.
+        </p>
+      </div>
+
+      {/* Dashboard Title Section */}
+      <div className="flex items-center justify-between bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">
+            Analytics Dashboard
+          </h2>
+          <p className="text-gray-600">Orders and Services Overview</p>
+        </div>
+        <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <BarChart3 className="w-5 h-5 text-blue-600" />
+          <span className="text-sm font-medium text-gray-700">Live Data</span>
+        </div>
+      </div>
+
+      {/* Date Range Controls with shadcn Calendar */}
+      <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-muted/50 rounded-lg border">
+        <div className="flex items-center gap-2">
+          <Label className="text-sm font-medium">From:</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-auto justify-start text-left font-normal",
+                  !startDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <CalendarComponent
+                mode="single"
+                selected={startDate}
+                onSelect={(date) => date && setStartDate(new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0))}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
+        <div className="flex items-center gap-2">
+          <Label className="text-sm font-medium">To:</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-auto justify-start text-left font-normal",
+                  !endDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <CalendarComponent
+                mode="single"
+                selected={endDate}
+                onSelect={(date) => date && setEndDate(new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999))}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Label className="text-sm font-medium">
+            Quick Range:
+          </Label>
+          <Select value={period} onValueChange={handlePeriodChange}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Today">Today</SelectItem>
+              <SelectItem value="This Week">This Week</SelectItem>
+              <SelectItem value="This Month">This Month</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* <Button onClick={() => refetch()} variant="default" size="sm">
+          Refresh Data
+        </Button> */}
+        <Button onClick={() => refetch()} variant="outline" size="sm">
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
+      </div>
+        
         {/* METRICS CARDS INTEGRATION - Replace the empty div */}
-        <DashboardMetrics 
-          startDate={startDate} 
-          endDate={endDate} 
-        />
-
-        {/* Date Range Controls */}
-        <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">From:</label>
-            <input
-              type="date"
-              value={startDate.toISOString().split("T")[0]}
-              onChange={(e) => setStartDate(new Date(e.target.value))}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">To:</label>
-            <input
-              type="date"
-              value={endDate.toISOString().split("T")[0]}
-              onChange={(e) => setEndDate(new Date(e.target.value))}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">
-              Quick Range:
-            </label>
-            <select
-              value={period}
-              onChange={(e) => handlePeriodChange(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="Today">Today</option>
-              <option value="This Week">This Week</option>
-              <option value="This Month">This Month</option>
-            </select>
-          </div>
-
-          <button
-            onClick={() => refetch()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
-          >
-            Refresh Data
-          </button>
-        </div>
+        <DashboardMetrics startDate={startDate} endDate={endDate} />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

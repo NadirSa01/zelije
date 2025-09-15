@@ -4,7 +4,7 @@ import type { IMessage } from "@/types/message";
 
 export const messageApi = createApi({
   reducerPath: "messageApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" ,credentials: 'include',  }),
   tagTypes: ["Message"],
   endpoints: (builder) => ({
     getMessages: builder.query<messagePayload, void>({

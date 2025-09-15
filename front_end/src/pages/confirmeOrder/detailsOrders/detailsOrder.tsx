@@ -74,7 +74,6 @@ const OrderDetails = () => {
 
   const handleProceedToCheckout = () => {
     // Add your checkout logic here
-    console.log("Proceeding to checkout with items:", cartProducts);
   };
 
   // Empty cart state
@@ -191,7 +190,7 @@ const OrderDetails = () => {
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <span>
-                            Color: {getLocalizedText(product.colorName)}
+                            {t("contact.form.color")}: {getLocalizedText(product.colorName)}
                           </span>
                           <div
                             className="w-4 h-4 rounded-full border border-gray-300"

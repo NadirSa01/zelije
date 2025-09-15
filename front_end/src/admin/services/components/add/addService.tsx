@@ -77,7 +77,6 @@ function AddService() {
         formData.append("image", file);
         const result = await uploadImage(formData).unwrap();
         
-        console.log("MinIO URL received:", result.imageUrl);
         newImageUrls.push(result.imageUrl);
       }
 

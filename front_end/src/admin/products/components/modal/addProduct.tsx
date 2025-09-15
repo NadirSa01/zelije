@@ -57,7 +57,6 @@ function AddProduct() {
   });
 
   const onSubmit = (data: ProductSchema) => {
-    console.log("Submitting product:", data);
     const payload = {
       name: {
         en: data.nameEn,
@@ -77,7 +76,6 @@ function AddProduct() {
         picture: detail.picture,
       })),
     };
-    console.log("Payload to be sent:", payload);
     createProduct(payload)
       .unwrap()
       .then((res) => {

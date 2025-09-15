@@ -5,7 +5,6 @@ import Service from "../models/serviceModel.mjs";
 // Create ServiceOrder
 export const createServiceOrder = asyncHandler(async (req, res) => {
   const { clientData, serviceId, description } = req.body;
-  console.log(clientData);
 
   try {
     const client = await Client.create({
@@ -23,7 +22,6 @@ export const createServiceOrder = asyncHandler(async (req, res) => {
       serviceId: service._id,
       description: description,
     });
-    console.log(newOrder);
 
     return res
       .status(201)
